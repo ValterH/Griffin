@@ -1,0 +1,218 @@
+Seznam:
+  template:
+    kraj: "The client is located in the {} region."
+    charge: "The advertisement expenditures charged from the wallet of service type {}"
+    prepay: "The advertisement expenditures prepaid into the wallet of service type {}"
+  task_label_template:
+    kraj:
+      0: "Jihomoravský kraj"
+      1: "Jihočeský kraj"
+      2: "Karlovarský kraj"
+      3: "Královéhradecký kraj"
+      4: "Liberecký kraj"
+      5: "Moravskoslezský kraj"
+      6: "Olomoucký kraj"
+      7: "Pardubický kraj"
+      8: "Plzeňský kraj"
+      9: "Praha"
+      10: "Středočeský kraj"
+      11: "Vysočina"
+      12: "Zlínský kraj"
+      13: "Ústecký kraj"
+    charge:
+      0: "a"
+      1: "b"
+      2: "c"
+      3: "d"
+      4: "e"
+      5: "f"
+      6: "g"
+      7: "h"
+    prepay:
+      0: "a"
+      1: "b"
+      2: "c"
+      3: "d"
+      4: "e"
+      5: "f"
+      6: "g"
+      7: "h"
+rel-f1:
+  template:
+    driver-dnf: "The driver's DNF result is {}"
+    driver-top3: "Whether the driver is in the top 3 is {}"
+  task_label_template:
+    driver-dnf:
+      0: "False"
+      1: "True"
+    driver-top3:
+      0: "False"
+      1: "True"
+stackexchange:
+  template:
+    churn: "The user's churn behavior is {}"
+    upvote: "The user's upvote behavior is {}"
+  task_label_template:
+    churn:
+      0: "False"
+      1: "True"
+    upvote:
+      0: "False"
+      1: "True"
+outbrain-small:
+  template:
+    ctr: "Whether the clicked is {}"
+  task_label_template:
+    ctr:
+      0: "False"
+      1: "True"
+telstra:
+  template:
+    severity: "Telstra network's fault severity based on the log data is {}"
+  task_label_template:
+    severity:
+      0: "No impact"
+      1: "Moderate impact"
+      2: "Severe impact"
+virus:
+  template:
+    wnv-pred: "Whether or not West Nile virus is present is {}"
+  task_label_template:
+    wnv-pred:
+      0: "False"
+      1: "True"
+Amazon:
+  template:
+    churn: "The customer's churn behavior is {}"
+  task_label_template:
+    churn:
+      0: "False"
+      1: "True"
+avs:
+  template:
+    repeater: "The customer's repeater behavior is {}"
+  task_label_template:
+    repeater:
+      0: "False"
+      1: "True"
+retailrocket:
+  template:
+    cvr: "Whether the item is added to the cart is {}"
+  task_label_template:
+    cvr:
+      0: "False"
+      1: "True"
+diginetica:
+  template:
+    ctr: "Whether the item is clicked is {}"
+  task_label_template:
+    ctr:
+      0: "False"
+      1: "True"
+diginetica-downsample:
+  template:
+    ctr: "Whether the item is clicked is {}"
+  task_label_template:
+    ctr:
+      0: "False"
+      1: "True"
+Joint-v5:
+  template:
+    seznam-kraj: "The client is located in the {} region."
+    seznam-charge: "The advertisement expenditures charged from the wallet of service type {}"
+    seznam-prepay: "The advertisement expenditures prepaid into the wallet of service type {}"
+    rel-f1-driver-dnf: "The driver's DNF result is {}"
+    rel-f1-driver-top3: "Whether the driver is in the top 3 is {}"
+    stackexchange-churn: "The user's churn behavior is {}"
+    stackexchange-upvote: "The user's upvote behavior is {}"
+    outbrain-small-ctr: "Whether the clicked is {}"
+    virus-wnv-pred: "Whether or not West Nile virus is present is {}"
+    telstra-severity: "Telstra network's fault severity based on the log data is {}"
+    amazon-churn: "The customer's churn behavior is {}"
+    avs-repeater: "The customer's repeater behavior is {}"
+    retailrocket-cvr: "Whether the item is added to the cart is {}"
+    diginetica-ctr: "Whether the item is clicked is {}"
+    diginetica-downsample-ctr: "Whether the item is clicked is {}"
+    facebook-recruiting-bot: "Whether the bidder is bot is {}"
+    rel-hm-user-churn: "The user's churn behavior is {}"
+    rel-trial-study-outcome: "Whether the trial will achieve its primary outcome is {}"
+  task_label_template:
+    seznam-kraj:
+      0: "Jihomoravský kraj"
+      1: "Jihočeský kraj"
+      2: "Karlovarský kraj"
+      3: "Královéhradecký kraj"
+      4: "Liberecký kraj"
+      5: "Moravskoslezský kraj"
+      6: "Olomoucký kraj"
+      7: "Pardubický kraj"
+      8: "Plzeňský kraj"
+      9: "Praha"
+      10: "Středočeský kraj"
+      11: "Vysočina"
+      12: "Zlínský kraj"
+      13: "Ústecký kraj"
+    seznam-charge:
+      0: "a"
+      1: "b"
+      2: "c"
+      3: "d"
+      4: "e"
+      5: "f"
+      6: "g"
+      7: "h"
+    seznam-prepay:
+      0: "a"
+      1: "b"
+      2: "c"
+      3: "d"
+      4: "e"
+      5: "f"
+      6: "g"
+      7: "h"
+    rel-f1-driver-dnf:
+      0: "False"
+      1: "True"
+    rel-f1-driver-top3:
+      0: "False"
+      1: "True"
+    stackexchange-churn:
+      0: "False"
+      1: "True"
+    stackexchange-upvote:
+      0: "False"
+      1: "True"
+    outbrain-small-ctr:
+      0: "False"
+      1: "True"
+    virus-wnv-pred:
+      0: "False"
+      1: "True"
+    telstra-severity:
+      0: "No impact"
+      1: "Moderate impact"
+      2: "Severe impact"
+    amazon-churn:
+      0: "False"
+      1: "True"
+    avs-repeater:
+      0: "False"
+      1: "True"
+    retailrocket-cvr:
+      0: "False"
+      1: "True"
+    diginetica-ctr:
+      0: "False"
+      1: "True"
+    diginetica-downsample-ctr:
+      0: "False"
+      1: "True"
+    facebook-recruiting-bot:
+      0: "False"
+      1: "True"
+    rel-hm-user-churn:
+      0: "False"
+      1: "True"
+    rel-trial-study-outcome:
+      0: "False"
+      1: "True"

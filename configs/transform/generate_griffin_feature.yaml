@@ -1,0 +1,12 @@
+transforms:
+  - name: griffin_feature_split_column
+    config:
+      keep_original_columns: true
+  - name: column_transform_chain
+    config:
+      transforms:
+        - name: norm_numeric
+          config:
+            frequency_mode: true
+        - name: remap_category
+        - name: category_frequency

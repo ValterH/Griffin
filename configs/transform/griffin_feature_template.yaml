@@ -1,0 +1,451 @@
+# A dictionary of templates for Griffin feature extraction.
+# The keys are the names of the datasets, and the values are dictionaries of templates.
+# The templates are dictionaries of strings, and the keys are the names of the features.
+# The values are strings that contain the template for the feature.
+# The templates are used to extract the features from the data.
+Seznam:
+  template:
+    Client:
+      kraj: "Client is located in the {kraj} region."
+      obor: "Client is located in the {obor} domain field."
+    Dobito:
+      sluzba: "The service type of advertisement expenditures charged into the wallet is {sluzba}."
+      date: "The date of advertisement expenditures charged into the wallet is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    Probehnuto:
+      sluzba: "The service type of advertisement expenditures prepaid from the wallet is {sluzba}."
+      date: "The date of advertisement expenditures prepaid from the wallet is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    ProbehnutoMimoPenezenku:
+      date: "The date of advertisement expenditures prepaid but not from the wallet is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    __task__:kraj:Client:
+      obor: "Predicting the region located in the {obor} domain field."
+    __task__:charge:Dobito:
+      date: "Predicting the service type with advertisement expenditures charged from the wallet on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    __task__:prepay:Probehnuto:
+      date: "Predicting the service type with advertisement expenditures prepaid into the wallet on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+
+rel-f1:
+  template:
+    constructor_standings:
+      default_value: "Default value for constructor standings."
+    drivers:
+      nationality: "The driver's nationality is {nationality}."
+      dob: "The driver's date of birth is {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    constructors:
+      name: "The constructor's name is {name}."
+      nationality: "The constructor's nationality is {nationality}."
+    circuits:
+      name: "The circuit's name is {name}."
+      location: "The circuit is located in {location}."
+      country: "The circuit is in the country of {country}."
+    standings:
+      default_value: "Default value for standings."
+    qualifying:
+      date: "The qualifying session was held on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    results:
+      number: "The car number is {number}."
+      statusId: "The status of the driver is {statusId}."
+      date: "The date is {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    races:
+      round: "The round is {round}."
+      name: "The race name is {name}."
+      date: "The date is {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    constructor_results:
+      date: "The date is {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    __task__:driver-dnf:drivers:
+      date: "Predicting the DNF behavior of the driver in the next month on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    __task__:driver-top3:drivers:
+      date: "Predicting whether the driver will qualify in the top-3 for a race in the next one month from {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+      dob: "Predicting whether the driver will qualify in the top-3 for a race in the next one month with date of birth {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+      nationality: "Predicting whether the driver will qualify in the top-3 for a race in the next one month with nationality {nationality}."
+    __task__:driver-position:drivers:
+      date: "Predicting the driver's finishing position in the next one month from {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+      dob: "Predicting the driver's finishing position in the next one month with date of birth {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+      nationality: "Predicting the driver's finishing position in the next one month with nationality {nationality}."
+
+outbrain-small:
+  template:
+    Event:
+      platform: "The platform of the event is {platform}."
+      geo_location: "The geo location of the event is {geo_location}."
+      timestamp: "The timestamp of the event is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    Pageview:
+      platform: "The platform of the pageview is {platform}."
+      geo_location: "The geo location of the pageview is {geo_location}."
+      traffic_source: "The traffic source of the pageview is {traffic_source}."
+      timestamp: "The timestamp of the pageview is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    Click:
+      clicked: "The clicked behavior of the click is {clicked}."
+      timestamp: "The timestamp of the click is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    PromotedContent:
+      campaign_id: "The campaign id of the promoted content is {campaign_id}."
+      advertiser_id: "The advertiser id of the promoted content is {advertiser_id}."
+    DocumentsMeta:
+      source_id: "The source id of the document is {source_id}."
+      publisher_id: "The publisher id of the document is {publisher_id}."
+      publish_time: "The publish time of the document is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    DocumentsTopic:
+      document_id: "The document id of the document topic is {document_id}."
+      topic_id: "The topic id of the document topic is {topic_id}."
+      # confidence_level: "The confidence level of the document topic is {confidence_level}."
+    DocumentsCategory:
+      category_id: "The category id of the document category is {category_id}."
+      # confidence_level: "The confidence level of the document category is {confidence_level}."
+    DocumentsEntity:
+      default_value: "Feature node of document entity."
+      # entity_id: "The entity id of the document entity is {entity_id}."
+      # confidence_level: "The confidence level of the document entity is {confidence_level}."
+    User:
+      default_value: "Feature node of user."
+    __task__:ctr:Click:
+      timestamp: "Predicting the click behavior of the user on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+  Modify_function:
+    Click:
+      clicked: "lambda x: 'true' if x == 1 else 'false'"
+
+stackexchange:
+  template:
+    Badges:
+      Name: "The badge is titled '{Name}'."
+      Class: "The badge is in class {Class}."
+      TagBased: "The badge is tagbased {TagBased}."
+      Date: "The badge is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    Comments:
+      Text: "The comment is: {Text}"
+      CreationDate: "The comment is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    PostHistory:
+      Text: "The post history with main text: {Text}"
+      Comment: "The post history with additional comment: {Comment}"
+      CreationDate: "The post history is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    PostLink:
+      LinkTypeId: "The post link with link type {LinkTypeId}."
+      CreationDate: "The post link is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    PostTag:
+      default_value: "Feature node of post tag."
+    Posts:
+      Title: "The post is titled '{Title}'."
+      Body: "The post body is: {Body}."
+      PostTypeId: "The post type is {PostTypeId}."
+      CreationDate: "The post is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    Tag:
+      TagName: "The tag name is {TagName}."
+    Users:
+      Location: "The user is located in {Location}."
+      AboutMe: "The user description is: {AboutMe}."
+      CreationDate: "The user is created on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    Vote:
+      VoteTypeId: "The vote type is {VoteTypeId}."
+      BountyAmount: "The vote with BountyAmount {BountyAmount}."
+      CreationDate: "The vote is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    __task__:churn:Users:
+      Timestamp: "Predicting the churn behavior of the user on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    __task__:upvote:Posts:
+      CreationDate: "Predicting the upvote behavior of the post on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+
+virus:
+  template:
+    Virus:
+      Date: "The trapping of mosquitos is on {MONTH} {DAY}, {YEAR}."
+      Date2: "The Virus is on {MONTH} {DAY}, {YEAR}."
+      Address: "The address of the traps is {Address}."
+      Species: "The species of the mosquitos is {Species}."
+      Block: "The block number of address of the traps is {Block}."
+      Street: "The street name of the traps is {Street}."
+      Trap: "The id of the traps is {Trap}."
+      AddressNumberAndStreet: "The address number and street of the traps is {AddressNumberAndStreet}."
+      Latitude: "The latitude of the traps is {Latitude}."
+      Longitude: "The longitude of the traps is {Longitude}."
+      AddressAccuracy: "The accuracy of the traps address is {AddressAccuracy}."
+    Weather:
+      Station: "The weather station is {Station}."
+      Date: "The weather is on {MONTH} {DAY}, {YEAR}."
+      Date2: "The weather is on {MONTH} {DAY}, {YEAR}."
+      Tmax: "The maximum temperature is {Tmax}."
+      Tmin: "The minimum temperature is {Tmin}."
+      Tavg: "The average temperature is {Tavg}."
+      Depart: "The departure from normal temperature is {Depart}."
+      DewPoint: "The dew point temperature is {DewPoint}."
+      WetBulb: "The Wet-Bulb temperature is {WetBulb}."
+      Heat: "The Heating Degree Days is {Heat}."
+      Cool: "The Cooling Degree Days is {Cool}."
+      Sunrise: "The sunrise time is {Sunrise}."
+      Sunset: "The sunset time is {Sunset}."
+      Codesum: "The Weather Code Summary is {Codesum}."
+      Depth: "The snow depth is {Depth}."
+      Water1: "The Water Equivalent of Snow is {Water1}."
+      SnowFall: "The Snowfall Amount is {SnowFall}."
+      PrecipTotal: "The Precipitation Total is {PrecipTotal}."
+      StnPressure: "The Station Pressure is {StnPressure}."
+      SeaLevel: "The Sea Level Pressure is {SeaLevel}."
+      ResultSpeed: "The Resultant Wind Speed is {ResultSpeed}."
+      ResultDir: "The Resultant Wind Direction is {ResultDir}."
+      AvgSpeed: "The Average Wind Speed is {AvgSpeed}."
+    Spray:
+      Date: "The spray effort is on {MONTH} {DAY}, {YEAR}."
+      Date2: "The spray effort is on {MONTH} {DAY}, {YEAR}."
+      Time: "The spray effort is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+      Latitude: "The latitude of the spray effort is {Latitude}."
+      Longitude: "The longitude of the spray effort is {Longitude}."
+    Day:
+      default_value: "Feature node of Day."
+    Address:
+      default_value: "Feature node of Address."
+    __task__:wnv-pred:Virus:
+      Date: "The trapping of mosquitos is on {MONTH} {DAY}, {YEAR}."
+      Date2: "The virus is on {MONTH} {DAY}, {YEAR}."
+      Address: "The address of the traps is {Address}."
+      Species: "The species of the mosquitos is {Species}."
+      Block: "The block number of address of the traps is {Block}."
+      Street: "The street name of the traps is {Street}."
+      Trap: "The id of the traps is {Trap}."
+      AddressNumberAndStreet: "The address number and street of the traps is {AddressNumberAndStreet}."
+      Latitude: "The latitude of the traps is {Latitude}."
+      Longitude: "The longitude of the traps is {Longitude}."
+      AddressAccuracy: "The accuracy of the traps address is {AddressAccuracy}."
+
+telstra:
+  template:
+    Event:
+      location: "The location of the event is {location}."
+    Severity_type:
+      severity_type: "The severity type of the log files is {severity_type}."
+    Event_type:
+      event_type: "The event type is {event_type}."
+    Resource_type:
+      resource_type: "The resource type is {resource_type}."
+    Log_feature:
+      log_feature: "The features extracted from the log files is {log_feature}."
+      volume: "The frequency of the log feature is {volume}."
+    __task__:severity:Event:
+      location: "The location of the event is {location}."
+
+retailrocket:
+  template:
+    View:
+      added_to_cart: "The view with added_to_chart is {added_to_cart}."
+      timestamp: "The view is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    Category:
+      default_value: "Feature node of category."
+    ItemAvailability:
+      available: "Item with availability {available}."
+      timestamp: "Item availability on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    ItemProperty:
+      value: "Item property with property {value}."
+      timestamp: "Item property on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    ItemCategory:
+      timestamp: "Item category on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    Item:
+      default_value: "Feature node of item."
+    Visitor:
+      default_value: "Feature node of visitor."
+    __task__:cvr:View:
+      timestamp: "Predicting the conversion behavior of whether an item will be added to the shopping cart in the view on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+
+diginetica:
+  template:
+    Product:
+      categoryId: "The product belongs to the category {categoryId}."
+    Click:
+      timestamp: "The click is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    ClickQueryTest:
+      timestamp: "The click query test is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+      clicked: "The click query test is {clicked}."
+    QueryResult:
+      timestamp: "The query result is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    View:
+      timestamp: "The view is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    Purchase:
+      timestamp: "The purchase is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    Query:
+      categoryId: "The query belongs to the category {categoryId}."
+      timestamp: "The query is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    ProductNameToken:
+      default_value: "Feature node of product name token."
+    QuerySearchstringToken:
+      default_value: "Feature node of query search string token."
+    Session:
+      default_value: "Feature node of session."
+    User:
+      default_value: "Feature node of user."
+    Orders:
+      default_value: "Feature node of orders."
+    Token:
+      default_value: "Feature node of token."
+    __task__:ctr:ClickQueryTest:
+      timestamp: "Predicting the click behavior on {DAYOFWEEK}, {MONTH} {DAY}."
+    __task__:purchase:Purchase:
+      timestamp: "Predicting the purchase behavior on {DAYOFWEEK}, {MONTH} {DAY}."
+
+diginetica-downsample:
+  template:
+    Product:
+      categoryId: "The product belongs to the category {categoryId}."
+    Click:
+      timestamp: "The click is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    ClickQueryTest:
+      timestamp: "The click query test is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+      clicked: "The click query test is {clicked}."
+    QueryResult:
+      timestamp: "The query result is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    View:
+      timestamp: "The view is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    Purchase:
+      timestamp: "The purchase is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    Query:
+      categoryId: "The query belongs to the category {categoryId}."
+      timestamp: "The query is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    ProductNameToken:
+      default_value: "Feature node of product name token."
+    QuerySearchstringToken:
+      default_value: "Feature node of query search string token."
+    Session:
+      default_value: "Feature node of session."
+    User:
+      default_value: "Feature node of user."
+    Orders:
+      default_value: "Feature node of orders."
+    Token:
+      default_value: "Feature node of token."
+    __task__:ctr:ClickQueryTest:
+      timestamp: "Predicting the click behavior on {DAYOFWEEK}, {MONTH} {DAY}."
+    __task__:purchase:Purchase:
+      timestamp: "Predicting the purchase behavior on {DAYOFWEEK}, {MONTH} {DAY}."
+
+Amazon:
+  template:
+    Product:
+      title: "The product is titled '{title}'."
+      category: "The product belongs to the {category} category."
+      price: "The product is priced at {price}."
+      brand: "The product is offered by the brand {brand}."
+      description: "The product description is {description}"
+    Customer:
+      default_value: "Feature node of customer."
+    Review:
+      rating: "It rates the product at {rating} stars."
+      verified: "The review is {verified}verified by the purchase."
+      summary: "The review summarized experiences with {summary}."
+      review_text: "The review further shared: {review_text}"
+      review_time: "The review time is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    __task__:churn:Customer:
+      timestamp: "Predicting the churn behavior of the customer on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    __task__:purchase:Review:
+      prediction_timestamp: "Predicting the purchase behavior of the product on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+    __task__:rating:Review:
+      review_time: "Predicting the rating of the product on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+  Modify_function:
+    Review:
+      verified: "lambda x: '' if x == 'True' else 'not '"
+
+avs:
+  template:
+    History:
+      offerdate: "The offer date is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+      market: "The market is {market}."
+    Offer:
+      default_value: "Feature node of offer."
+    Transaction:
+      date: "The transaction date is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+      dept: "The department is {dept}."
+      productmeasure: "The product measure is {productmeasure}."
+    Chain:
+      default_value: "Feature node of chain."
+    Company:
+      default_value: "Feature node of company."
+    Category:
+      default_value: "Feature node of category."
+    Brand:
+      default_value: "Feature node of brand."
+    Customer:
+      default_value: "Feature node of customer."
+    __task__:repeater:History:
+      market: "Predicting the repeater behavior of the market {market}."
+      timestamp: "Predicting the repeater behavior on {DAYOFWEEK}, {MONTH} {DAY}."
+
+facebook-recruiting:
+  template:
+    Bidders:
+      payment_account: "The payment account of the bidder is {payment_account}."
+      address: "The address of the bidder is {address}."
+    Bids:
+      bidder_id: "The id of the bidder is {bidder_id}."
+      auction: "The auction of the bid is {auction}."
+      merchandise: "The merchandise of the bid is {merchandise}."
+      device: "The device of the bid is {device}."
+      time: "The bid is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+      country: "The country of the bid is {country}."
+      ip: "The ip of the bid is {ip}."
+      url: "The url of the bid is {url}."
+    __task__:bot:Bidders:
+      payment_account: "Predicting the bot behavior of the payment account {payment_account}."
+      address: "Predicting the bot behavior of the address {address}."
+
+talkingdata:
+  template:
+    Gender_age:
+      default_value: "Feature node of Gender_age."
+    Brand:
+      phone_brand: "The brand of the phone is {phone_brand}."
+      device_model: "The device model of the phone is {device_model}."
+    App_labels:
+      default_value: "Feature node of App_labels."
+    App_events:
+      is_active: "Whether the app is in active use when the event occurs is {is_active}."
+    Label_categories:
+      category: "The category of the app in text is {category}."
+    Events:
+      timestamp: "The event is on {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+      longitude: "The longitude of the event is {longitude}."
+      latitude: "The latitude of the event is {latitude}."
+    Apps:
+      default_value: "Feature node of Apps."
+    __task__:demo-pred:Gender_age:
+      default_value: "Predicting the group information."
+  Modify_function:
+    App_events:
+      is_active: "lambda x: 'true' if x == 1 else 'false'"
+
+airbnb:
+  template:
+    User:
+      date_account_created: "The time when the account was created is {MONTH} {DAY}, {YEAR}."
+      timestamp_first_active: "The time when user was active for the first time is {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+      date_first_booking: "The date when the user made the first booking is {MONTH} {DAY}, {YEAR}."
+      age: "The age of the user is {age}."
+      signup_method: "The method how the user signed up is {signup_method}."
+      signup_flow: "The signup flow of the user is {signup_flow}."
+      language: "The language that the user chose is {language}."
+      affiliate_channel: "The marketing channel through which the user was referred to the platform is {affiliate_channel}."
+      affiliate_provider: "The provider of the marketing is {affiliate_provider}."
+      first_affiliate_tracked: "The first marketing the user interacted with before the signing up is {first_affiliate_tracked}."
+      signup_app: "The app through which the user signed up is {signup_app}."
+      first_device_type: "The type of the device used when the user visited the platform for the first time is {first_device_type}."
+      first_browser: "The browser used when the user visited the platform for the first time is {first_browser}."
+    Population:
+      default_value: "Feature node of Population."
+    Country:
+      destination_language: "The language of the destination country is {destination_language}."
+      language_levenshtein_distance: "The levenshtein distance between the user's language and the language of the destination country is {language_levenshtein_distance}."
+    Session:
+      action: "The action of the user in this session is {action}."
+      action_type: "The type of the action of the user in this session is {action_type}."
+      action_detail: "The action detail of the user in this session is {action_detail}."
+      device_type: "The type of the device that the user used in this session is {device_type}."
+      secs_elapsed: "The amount of time in seconds that the user spent on the action during the session is {secs_elapsed}."
+    Gender:
+      default_value: "Feature node of Gender."
+    Age_bucket:
+      default_value: "Feature node of Age_bucket."
+    __task__:destination:User:
+      date_account_created: "Predicting the destination of the user: the time when the account was created is {MONTH} {DAY}, {YEAR}."
+      timestamp_first_active: "Predicting the destination of the user: the time when user was active for the first time is {DAYOFWEEK}, {MONTH} {DAY}, {YEAR}."
+      date_first_booking: "Predicting the destination of the user: the date when the user made the first booking is {MONTH} {DAY}, {YEAR}."
+      age: "Predicting the destination of the user: the age of the user is {age}."
+      signup_method: "Predicting the destination of the user: the method how the user signed up is {signup_method}."
+      signup_flow: "Predicting the destination of the user: the signup flow of the user is {signup_flow}."
+      language: "Predicting the destination of the user: the language that the user chose is {language}."
+      affiliate_channel: "Predicting the destination of the user: the marketing channel through which the user was referred to the platform is {affiliate_channel}."
+      affiliate_provider: "Predicting the destination of the user: the provider of the marketing is {affiliate_provider}."
+      first_affiliate_tracked: "Predicting the destination of the user: the first marketing the user interacted with before the signing up is {first_affiliate_tracked}."
+      signup_app: "Predicting the destination of the user: the app through which the user signed up is {signup_app}."
+      first_device_type: "Predicting the destination of the user: the type of the device used when the user visited the platform for the first time is {first_device_type}."
+      first_browser: "Predicting the destination of the user: the browser used when the user visited the platform for the first time is {first_browser}."

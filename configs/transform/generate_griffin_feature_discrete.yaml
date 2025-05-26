@@ -1,0 +1,14 @@
+transforms:
+  - name: column_transform_chain
+    config:
+      transforms:
+        - name: norm_numeric
+          config:
+            use_skew_threshold: false
+  - name: griffin_feature_split_column
+    config:
+      keep_original_columns: true
+  - name: column_transform_chain
+    config:
+      transforms:
+        - name: compute_category_num

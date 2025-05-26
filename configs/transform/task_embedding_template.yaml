@@ -1,0 +1,120 @@
+airbnb:
+  destination:
+    task_name: destination
+    description: Predict the country destination for a user based on their account
+      and activity data.
+Amazon:
+  rating:
+    task_name: rating
+    description: Predict the rating a customer would give to a product based on review
+      data.
+  purchase:
+    task_name: purchase
+    description: Retrieve the most relevant products for a customer to purchase.
+  churn:
+    task_name: churn
+    description: Classify whether a customer is likely to churn based on their data.
+avs:
+  repeater:
+    task_name: repeater
+    description: The task is to classify whether a customer is a repeater based on
+      their history and offer data.
+diginetica-downsample:
+  ctr:
+    task_name: ctr
+    description: Predict whether a user clicked on an item given the query and item
+      information.
+  purchase:
+    task_name: purchase
+    description: Retrieve the items that a user is likely to purchase based on session
+      and item data.
+facebook-recruiting:
+  bot:
+    task_name: bot
+    description: The task is to classify whether a bidder is a bot or not based on
+      their bidding behavior and associated features.
+outbrain-small:
+  ctr:
+    task_name: ctr
+    description: The task is to predict whether a user will click on a promoted content
+      ad based on the provided features.
+rel-avito:
+  ad-ctr:
+    task_name: ad-ctr
+    description: Predict the number of clicks (num_click) for advertisements based
+      on their features.
+  user-visits:
+    task_name: user-visits
+    description: Classify the number of visits (num_visits) for users based on their
+      features.
+  user-clicks:
+    task_name: user-clicks
+    description: Classify the number of clicks (num_click) for users based on their
+      features.
+rel-f1:
+  driver-position:
+    task_name: driver-position
+    description: Predict the position of a driver in a race based on historical data.
+  driver-dnf:
+    task_name: driver-dnf
+    description: Classify whether a driver did not finish a race based on historical
+      data.
+  driver-top3:
+    task_name: driver-top3
+    description: Classify whether a driver qualified in the top 3 positions in a race
+      based on historical data.
+rel-hm:
+  user-churn:
+    task_name: user-churn
+    description: Predict whether a customer will churn based on their historical data.
+  item-sales:
+    task_name: item-sales
+    description: Forecast the sales of an item based on its historical sales data.
+rel-trial:
+  study-outcome:
+    task_name: study-outcome
+    description: Predict the outcome category of a study based on its features.
+  study-adverse:
+    task_name: study-adverse
+    description: Estimate the number of adverse events for a study based on its features.
+  site-success:
+    task_name: site-success
+    description: Predict the success rate of a facility based on its features.
+retailrocket:
+  cvr:
+    task_name: cvr
+    description: The task is to predict whether a viewed item will be added to the
+      cart based on the 'added_to_cart' column in the 'View' table.
+Seznam:
+  charge:
+    task_name: charge
+    description: Classify the 'sluzba' category for entries in the 'Dobito' table
+      based on the provided features.
+  prepay:
+    task_name: prepay
+    description: Classify the 'sluzba' category for entries in the 'Probehnuto' table
+      based on the provided features.
+stackexchange:
+  churn:
+    task_name: churn
+    description: Predict whether a user will churn based on their activity and attributes.
+  upvote:
+    task_name: upvote
+    description: Predict whether a post will receive an upvote based on its features
+      and metadata.
+talkingdata:
+  demo-pred:
+    task_name: demo-pred
+    description: The task is to predict the demographic group of a device based on
+      its associated data.
+telstra:
+  severity:
+    task_name: severity
+    description: The task is to classify the fault severity of events based on their
+      associated features and metadata.
+virus:
+  wnv-pred:
+    task_name: wnv-pred
+    description: The task is to predict the presence of the West Nile Virus (WnvPresent)
+      in the dataset based on various features such as location, date, and weather
+      conditions.

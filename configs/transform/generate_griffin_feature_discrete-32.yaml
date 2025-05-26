@@ -1,0 +1,16 @@
+transforms:
+  - name: column_transform_chain
+    config:
+      transforms:
+        - name: discrete_numeric
+          config:
+            frequency_mode: false
+            bin_num: 32
+  - name: griffin_feature_split_column
+    config:
+      keep_original_columns: true
+  - name: column_transform_chain
+    config:
+      transforms:
+        - name: remap_category
+        # - name: category_frequency
