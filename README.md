@@ -40,7 +40,7 @@ For Relbench datasets, the raw datasets can be downloaded from their github repo
 
 For 4DBInfer original datasets, we also do a simple modification. Griffin pipeline requires all task tables have the **primary key column**. If the primary key column is not provided, we add the primary key column to the tables. We do this by manual work, and the code are saved at `notebooks/update_*_key.ipynb`.
 
-We also already provide the converted datasets after the Step 1 at [Google Drive](https://drive.google.com/drive/folders/1-0000000000000000000000000000000000000000).
+We also already provide the converted datasets after the Step 1 at [Google Drive](https://drive.google.com/drive/folders/117Wuj5dCvLyPCQrLefBXnBSn40GrEy5N?usp=share_link).
 
 ## Step 2: RDB-to-Graph
 
