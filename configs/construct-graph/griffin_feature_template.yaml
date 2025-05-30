@@ -216,3 +216,69 @@ Joint-v5:
     rel-trial-study-outcome:
       0: "False"
       1: "True"
+
+
+rel-combine:
+  template:
+    rel-stack-user-engagement: "Whether the user is engaged is {}."
+    rel-stack-user-badge: "Whether the user will receive badge is {}."
+    rel-event-user-repeat: "Whether the user is a repeat user is {}."
+    rel-event-user-ignore: "Whether the user will ignore an event or item is {}."
+    rel-event-user-churn: "Whether the use will churn is {}."
+    rel-event-item-churn: "Whether the item will churn is {}."
+  task_label_template:
+    rel-stack-user-engagement:
+      0: "False"
+      1: "True"
+    rel-stack-user-badge:
+      0: "False"
+      1: "True"
+    rel-event-user-repeat:
+      0: "False"
+      1: "True"
+    rel-event-user-ignore:
+      0: "False"
+      1: "True"
+    rel-amazon-user-churn:
+      0: "False"
+      1: "True"
+    rel-amazon-item-churn:
+      0: "False"
+      1: "True"
+
+
+rel-stack:
+  template:
+    user-engagement: "Whether the user is engaged is {}."
+    user-badge: "Whether the user will receive badge is {}."
+  task_label_template:
+    user-engagement:
+      0: "False"
+      1: "True"
+    user-badge:
+      0: "False"
+      1: "True"
+
+rel-event:
+  template:
+    user-repeat: "Whether the user is a repeat user is {}."
+    user-ignore: "Whether the user will ignore an event or item is {}."
+  task_label_template:
+    user-repeat:
+      0: "False"
+      1: "True"
+    user-ignore:
+      0: "False"
+      1: "True"
+
+rel-amazon:
+  template:
+    user-churn: "Whether the use will churn is {}."
+    item-churn: "Whether the item will churn is {}."
+  task_label_template:
+    user-churn:
+      0: "False"
+      1: "True"
+    item-churn:
+      0: "False"
+      1: "True"

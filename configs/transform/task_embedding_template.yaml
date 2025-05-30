@@ -118,3 +118,40 @@ virus:
     description: The task is to predict the presence of the West Nile Virus (WnvPresent)
       in the dataset based on various features such as location, date, and weather
       conditions.
+
+rel-stack:
+  user-engagement:
+    task_name: user-engagement
+    description: The task is to predict if a user will make any votes, posts, or comments in the next 3 months.
+  user-badge:
+    task_name: user-badge
+    description: The task is to predict if a user will receive a new badge in the next 3 months.
+  post-votes:
+    task_name: post-votes
+    description: The task is to predict how many votes a post will receive in the next 3 months.
+
+rel-event:
+  user-attendance:
+    task_name: user-attendance
+    description: The task is to predict a numerical attendance score for a user.
+  user-repeat:
+    task_name: user-repeat
+    description: The task is to predict whether a user will be a repeat user.
+  user-ignore:
+    task_name: user-ignore
+    description: The task is to predict whether a user will ignore an event or item.
+
+rel-amazon:
+  user-churn:
+    task_name: user-churn
+    description: The task is to predict the churn behavior of the customer.
+  user-ltv:
+    task_name: user-ltv
+    description: The task is to predict the lifetime value of the customer.
+  item-churn:
+    task_name: item-churn
+    description: The task is to predict the churn behavior of the product.
+  item-ltv:
+    task_name: item-ltv
+    description: The task is to predict the lifetime value of the product.
+  
