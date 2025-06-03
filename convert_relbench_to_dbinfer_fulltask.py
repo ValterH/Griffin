@@ -28,13 +28,28 @@ from yaml_utils import save_pyd
 
 def generate_column_schema(column, table, name):
     # A patch on rel-f1 dataset
-    if args.dataset == 'rel-f1' and name == 'races':
-        if column == 'time':
+    if args.dataset == "rel-f1" and name == "races":
+        if column == "time":
             table.df[column] = pd.to_timedelta(table.df[column]).dt.total_seconds()
-    if args.dataset == 'rel-trial' and name == 'designs':
-        if column == 'intervention_model' or column == 'masking':
-            column_schema = DBBColumnSchema(name=column, dtype=DBBColumnDType.category_t)
+    if args.dataset == "rel-trial" and name == "designs":
+        if column == "intervention_model" or column == "masking":
+            column_schema = DBBColumnSchema(
+                name=column, dtype=DBBColumnDType.category_t
+            )
             return column_schema
+    if args.dataset == "rel-stack" and name == "users":
+        if column == "ProfileImageUrl" or column == "WebsiteUrl":
+            return None
+    if args.dataset == "rel-trial" and name == "outcome_analyses":
+        if (
+            column == "ci_upper_limit_raw"
+            or column == "ci_lower_limit_raw"
+            or column == "p_value_raw"
+        ):
+            return None
+    if args.dataset == "rel-trial" and name == "studies":
+        if column == "limitations_and_caveats":
+            return None
     dtype = None
     # if the column is table.pkey_col, then it is a primary key
     if column == table.pkey_col:
@@ -45,7 +60,7 @@ def generate_column_schema(column, table, name):
     elif column in table.fkey_col_to_pkey_table:
         dtype = DBBColumnDType.foreign_key
         link_to = f"{table.fkey_col_to_pkey_table[column]}.{column}"
-    elif table.df[column].dtype == 'datetime64[ns]':
+    elif table.df[column].dtype == "datetime64[ns]":
         dtype = DBBColumnDType.datetime_t
     elif (
         table.df[column].dtype == float
@@ -128,6 +143,9 @@ def generate_table_schema(table, name):
             print(f"Skipping column: {column}")
             continue
         column_schema = generate_column_schema(column, table, name)
+        if column_schema is None:
+            print(f"Skipping column: {column}")
+            continue
         column_schemas.append(column_schema)
 
     table_schema = DBBTableSchema(
@@ -283,9 +301,7 @@ def update_task_metas_with_table_schemas(task_metas, table_schemas):
     return modified_task_metas
 
 
-def update_task_table(
-    table, task_meta, table_schemas, original_relbench_tasks
-):
+def update_task_table(table, task_meta, table_schemas, original_relbench_tasks):
     # Currently, this function is only used for updating the task table's primary key column
     # The pk should be the target table's primary key column
     target_table_name = task_meta.target_table
@@ -437,9 +453,7 @@ for task_name, task in tasks.items():
 
     # Save the train split
     train_table = task.get_table("train")
-    train_table = update_task_table(
-        train_table, task_meta, table_schemas, tasks
-    )
+    train_table = update_task_table(train_table, task_meta, table_schemas, tasks)
     train_table.df.to_parquet(Path(args.output_dir) / task_name / "train.pqt")
 
     # Save the validation split
