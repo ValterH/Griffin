@@ -36,7 +36,7 @@ bash conda/create_conda_env.sh
 
 ## Step 1: Any-RDB-to-RDB
 
-For Relbench datasets, the raw datasets can be downloaded from their github repo. Then it can be converted to 4DBInfer used RDB format by `convert_relbench_to_dbinfer.py`.
+For Relbench datasets, the raw datasets can be downloaded from their github repo. Then it can be converted to 4DBInfer used RDB format by `convert_relbench_to_dbinfer.py`. Note that 4DBInfer baselines require the task table to include all available columns in the target table. Thus if you want to test the 4DBInfer baselines, you need to convert the relbench datasets to 4DBInfer format with the full task table, with script `convert_relbench_to_dbinfer_fulltask.py`.
 
 For 4DBInfer original datasets, we also do a simple modification. Griffin pipeline requires all task tables have the **primary key column**. If the primary key column is not provided, we add the primary key column to the tables. We do this by manual work, and the code are saved at `notebooks/update_*_key.ipynb`.
 
@@ -67,6 +67,8 @@ python -m tab2graph.main preprocess datasets/$DATASET_NAME-raw transform dataset
 ```bash
 python -m tab2graph.main construct-graph datasets/$DATASET_NAME-single-griffin r2n-griffin datasets/$DATASET_NAME-r2n-griffin
 ```
+
+If you only want to test the 4DBInfer baselines, you can follow the original instructions in [4DBInfer](https://github.com/awslabs/multi-table-benchmark/tree/main/4DBInfer).
 
 ## Step 3: Graph-to-Huggingface
 

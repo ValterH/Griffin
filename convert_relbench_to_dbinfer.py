@@ -26,7 +26,30 @@ from dataset_meta import (
 from yaml_utils import save_pyd
 
 
-def generate_column_schema(column, table):
+def generate_column_schema(column, table, name):
+    # A patch on rel-f1 dataset
+    if args.dataset == "rel-f1" and name == "races":
+        if column == "time":
+            table.df[column] = pd.to_timedelta(table.df[column]).dt.total_seconds()
+    if args.dataset == "rel-trial" and name == "designs":
+        if column == "intervention_model" or column == "masking":
+            column_schema = DBBColumnSchema(
+                name=column, dtype=DBBColumnDType.category_t
+            )
+            return column_schema
+    if args.dataset == "rel-stack" and name == "users":
+        if column == "ProfileImageUrl" or column == "WebsiteUrl":
+            return None
+    if args.dataset == "rel-trial" and name == "outcome_analyses":
+        if (
+            column == "ci_upper_limit_raw"
+            or column == "ci_lower_limit_raw"
+            or column == "p_value_raw"
+        ):
+            return None
+    if args.dataset == "rel-trial" and name == "studies":
+        if column == "limitations_and_caveats":
+            return None
     dtype = None
     # if the column is table.pkey_col, then it is a primary key
     if column == table.pkey_col:
@@ -37,6 +60,8 @@ def generate_column_schema(column, table):
     elif column in table.fkey_col_to_pkey_table:
         dtype = DBBColumnDType.foreign_key
         link_to = f"{table.fkey_col_to_pkey_table[column]}.{column}"
+    elif table.df[column].dtype == "datetime64[ns]":
+        dtype = DBBColumnDType.datetime_t
     elif (
         table.df[column].dtype == float
         or table.df[column].dtype == np.float32
@@ -49,15 +74,16 @@ def generate_column_schema(column, table):
         or table.df[column].dtype == np.int64
         or table.df[column].dtype == bool
     ):
-        dtype = DBBColumnDType.category_t
+        # Based on relbench avito operation, we treat all integer columns as float, too
+        dtype = DBBColumnDType.float_t
     elif table.df[column].dtype == object:
         # First get the number of unique values
         try:
             n_unique = table.df[column].nunique()
-            if n_unique < 10:
-                dtype = DBBColumnDType.text_t
-            else:
+            if n_unique < 4:
                 dtype = DBBColumnDType.category_t
+            else:
+                dtype = DBBColumnDType.text_t
         except TypeError:
             # Handle unhashable types (e.g., numpy arrays)
             # Treat as text since we can't count unique values
@@ -116,7 +142,10 @@ def generate_table_schema(table, name):
         if column == "Unnamed: 0":
             print(f"Skipping column: {column}")
             continue
-        column_schema = generate_column_schema(column, table)
+        column_schema = generate_column_schema(column, table, name)
+        if column_schema is None:
+            print(f"Skipping column: {column}")
+            continue
         column_schemas.append(column_schema)
 
     table_schema = DBBTableSchema(
@@ -206,6 +235,9 @@ def update_task_metas_with_table_schemas(task_metas, table_schemas):
             print(
                 f"Warning: Target table {target_table_name} not found in table schemas"
             )
+            raise ValueError(
+                f"Target table {target_table_name} not found in table schemas"
+            )
             # return task_meta
 
         # Get the correct primary key column from the target table
@@ -217,6 +249,9 @@ def update_task_metas_with_table_schemas(task_metas, table_schemas):
 
         if target_table_pkey_col is None:
             print(f"Warning: No primary key found in target table {target_table_name}")
+            raise ValueError(
+                f"No primary key found in target table {target_table_name}"
+            )
             # return task_meta
 
         # Update task meta columns to use the correct primary key column name
@@ -329,7 +364,8 @@ task_metas = []
 for name, task in tasks.items():
     print(f"Processing task: {name}")
     task_meta = generate_task_meta(task, name)
-    task_metas.append(task_meta)
+    if task_meta is not None:
+        task_metas.append(task_meta)
     # if task_meta is not None:
     #     # Update task meta based on finalized table schemas
     #     task_meta = update_task_meta_with_table_schemas(task_meta, table_schemas)
