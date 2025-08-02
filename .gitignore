@@ -4,6 +4,9 @@ seznam*
 *.out
 tmp
 *.zip
+/checkpoints
+/results
+
 # IDE
 .idea
 
