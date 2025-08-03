@@ -1,3 +1,9 @@
+/.vscode
+
 checkpoints
 datasets
 logs
+/converted_with_full_task
+
+__pycache__
+*.safetensors
