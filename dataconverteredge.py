@@ -127,7 +127,12 @@ def getneighbor(x, edgedata, timestamps):
         ptr, tar = edgedata[reltype]
         nodelist = tar[ptr[id]:ptr[id+1]]
         ret[reltype] = nodelist
-        ret[reltype+"___TIMESTAMP"] = timestamps[reltype][nodelist]
+        # Get timestamp data and ensure consistent dtype
+        timestamp_data = timestamps[reltype][nodelist]
+        # Convert to float32 to avoid PyArrow mixing dtypes error
+        if torch.is_tensor(timestamp_data):
+            timestamp_data = timestamp_data.float()  # Convert to float32
+        ret[reltype+"___TIMESTAMP"] = timestamp_data
     return ret
 
 def process(nodetype):
@@ -144,7 +149,13 @@ def process(nodetype):
             ei = ei[[1, 0]]
         edgedata[reltype] = adj2list(ei, num_node)
 
-    nodedss = {reltype: Dataset.load_from_disk(osp.join(dstpath, f"node/{edgename2tail(reltype)}/feat")).with_format("torch")["timestamp"] for reltype in edgedata}
+    nodedss = {}
+    for reltype in edgedata:
+        timestamp_data = Dataset.load_from_disk(osp.join(dstpath, f"node/{edgename2tail(reltype)}/feat")).with_format("torch")["timestamp"]
+        # Ensure consistent dtype to avoid PyArrow mixing dtypes error
+        if torch.is_tensor(timestamp_data):
+            timestamp_data = timestamp_data.float()  # Convert to float32
+        nodedss[reltype] = timestamp_data
      
     ds = Dataset.from_dict({"number": list(range(num_node))})
     ds = ds.map(partial(getneighbor, edgedata=edgedata, timestamps=nodedss))
