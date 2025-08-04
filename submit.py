@@ -50,7 +50,7 @@ for seed in [
 ]:
     for dataset, task in all_pairs:
         for pretrain in [
-            # True, 
+            True, 
             False
         ]:
             cmd = rf"""
@@ -76,7 +76,7 @@ accelerate launch --config_file hconfig.yaml rt_comparison.py \
     --max_steps {2**13+1} \
     """
             if pretrain:
-                ckpt_path = f"/lfs/local/0/valter/Griffin/checkpoints/{checkpoint_dict[dataset]}/FULL/best_checkpoint/model.safetensors"
+                ckpt_path = f"/lfs/local/0/valter/Griffin/checkpoints/single-sft/best_checkpoint/model.safetensors"
                 cmd += f" --loadpath {ckpt_path}"
                 chk = f"test -e {ckpt_path}"
             else:

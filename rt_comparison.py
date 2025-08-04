@@ -36,7 +36,7 @@ def eval_task(model, dec, dataset, args, accelerator, metric):
     outputs = []
     labels = []
     with torch.no_grad():
-        for data in tqdm(loader, desc="Val:", disable=not accelerator.is_main_process):
+        for data in tqdm(loader, desc="Val", disable=not accelerator.is_main_process):
             output, label = compute_output(model, dec, data)
             if output.shape[0] < batchsize:
                 assert output.ndim == 2
@@ -156,13 +156,18 @@ def main(args):
         dashed = tasknames[0].split("-")
         dataset_name = f"{dashed[0]}-{dashed[1]}" # rel-hm
         task_name = "-".join(dashed[2:]) # user-churn
-        
+        pretrained = None
+        if args.loadpath is not None:
+            if "single-sft" in args.loadpath:
+                pretrained = "single-sft"
+            else:
+                raise ValueError(f"Unknown loadpath {args.loadpath}")
         store.save({
             "script_name": "griffin",
             "seed": args.seed,
             "dataset": dataset_name,
             "task": task_name,
-            "pretrain_steps": 2 if args.loadpath is not None else 0,
+            "pretrain_steps": pretrained
         }, "args")
 
     floatembmodel = SimpleRepeater(args.hiddim)
@@ -222,7 +227,7 @@ def main(args):
             pin_memory=True
         )
         loader = accelerator.prepare(loader)
-        for data in tqdm(loader, desc="Train:", disable=not accelerator.is_main_process):
+        for data in tqdm(loader, desc="Train", disable=not accelerator.is_main_process):
             if step & (step - 1) == 0:
                 eval_metric = {}
                 for taskname in tasknames:
