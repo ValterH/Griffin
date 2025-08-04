@@ -33,7 +33,8 @@ def compute_metric(outputs: torch.Tensor, labels: torch.Tensor, metric: str):
         score = - F.cross_entropy(outputs, labels)  # nn.()(outputs, labels).item()
     # Metrics for comparison with relfm
     elif metric == "auc":
-        score = roc_auc_score(labels.cpu().numpy(), outputs[:, 1].cpu().numpy())
+        outputs = outputs[:, 1] - outputs[:, 0]
+        score = roc_auc_score(labels.cpu().numpy(), outputs.cpu().numpy())
     elif metric == "r2":
         score = r2_score(labels.cpu().numpy(), outputs.cpu().numpy())
     else:
