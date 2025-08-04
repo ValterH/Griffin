@@ -1,0 +1,11 @@
+#!/bin/bash
+
+DATASET=$1
+
+SRCPATH="datasets/$DATASET-r2n-griffin"
+DSTPATH="datasets/relbench/$DATASET"
+
+python dataconverter.py $SRCPATH $DSTPATH
+python dataconverteredge.py $SRCPATH $DSTPATH
+python dataconvertertask.py $SRCPATH $DSTPATH
+python dataconverterpost.py $SRCPATH
