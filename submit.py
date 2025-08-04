@@ -57,7 +57,7 @@ for seed in [
 accelerate launch --config_file hconfig.yaml rt_comparison.py \
     datasets/joint-v65 logs/{dataset} {task} \
     --seed {seed} \
-    --savepath results/hm \
+    --savepath results/{dataset}/{task} \
     --tasks {dataset}-{task} \
     --hop 2 \
     --fanout 20 \
@@ -77,7 +77,7 @@ accelerate launch --config_file hconfig.yaml rt_comparison.py \
     """
             if pretrain:
                 ckpt_path = f"/lfs/local/0/valter/Griffin/checkpoints/single-sft/best_checkpoint/model.safetensors"
-                cmd += f" --loadpath {ckpt_path}"
+                cmd += f"--loadpath {ckpt_path}"
                 chk = f"test -e {ckpt_path}"
             else:
                 chk = "true"
