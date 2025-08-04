@@ -12,7 +12,6 @@ import numpy as np
 import accelerate
 import argparse
 import os.path as osp
-from typing import Union
 from metric import compute_metric
 import yaml
 
