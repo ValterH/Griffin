@@ -1,8 +1,10 @@
 /.vscode
 
-checkpoints
-datasets
-logs
+/cache_data
+/cache_text
+/checkpoints
+/datasets
+
 /converted_with_full_task
 
 __pycache__
