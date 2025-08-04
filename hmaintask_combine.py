@@ -4,6 +4,7 @@ from hdataset import Graph, Task
 from hloaderwrapper import LoaderWrapperTask
 from hmodel import GriffinMod
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 from accelerate import Accelerator
 from accelerate.utils import ProjectConfiguration
 from hFloatEmb import SimpleRepeater, getfloatdec
@@ -31,7 +32,7 @@ def eval_task(model, dec, dataset, args, accelerator, metric):
     outputs = []
     labels = []
     with torch.no_grad():
-        for data in loader:
+        for data in tqdm(loader, desc="Evaluating:", disable=not accelerator.is_main_process):
             output, label = compute_output(model, dec, data)
             if output.shape[0] < batchsize:
                 assert output.ndim == 2
@@ -201,7 +202,7 @@ def main(args):
             pin_memory=True
         )
         loader = accelerator.prepare(loader)
-        for data in loader:
+        for data in tqdm(loader, desc=f"Epoch {epoch}:", disable=not accelerator.is_main_process):
             step += 1
             optimizer.zero_grad()
             loss = compute_loss(model, dec, data)
