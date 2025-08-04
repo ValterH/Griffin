@@ -1,4 +1,4 @@
-autogluon-tabular[all]==1.0.0
+autogluon-tabular[all]
 matplotlib
 networkx
 numpy
@@ -19,19 +19,19 @@ wandb
 optuna
 s3fs
 --find-links https://download.pytorch.org/whl/torch_stable.html
-torch==2.0.0+cu117
+torch==2.1.0+cu118
 torchmetrics
 torchtext
-torchdata
+torchdata==0.7.0
 --pre
---find-links https://data.dgl.ai/wheels-test/cu117/repo.html
-dgl==2.1a240205+cu117
+--find-links https://data.dgl.ai/wheels-test/cu118/repo.html
+dgl==2.1a240205+cu118
 einops
 typer
 featuretools
 transformers
 boto3
-mysqlclient
+# mysqlclient
 sqlalchemy
 sqlalchemy_schemadisplay
 openai
