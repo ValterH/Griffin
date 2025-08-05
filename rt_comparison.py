@@ -119,6 +119,10 @@ def main(args):
     # model.reset_parameters()
     dec = getfloatdec(args.hiddim)
 
+    num_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    if accelerator.is_main_process:
+        print(f"Number of trainable parameters: {num_parameters}")
+
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
     graph = Graph(args.dataset)
     task = Task(args.dataset)
