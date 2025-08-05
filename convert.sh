@@ -9,3 +9,4 @@ python dataconverter.py $SRCPATH $DSTPATH
 python dataconverteredge.py $SRCPATH $DSTPATH
 python dataconvertertask.py $SRCPATH $DSTPATH
 python dataconverterpost.py $SRCPATH
+# python merge_relbench_dataset.py --dataset_name $DATASET --dst_path "datasets/joint-v65"

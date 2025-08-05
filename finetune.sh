@@ -1,10 +1,10 @@
 # RT comparison
 accelerate launch --config_file hconfig.yaml rt_comparison.py \
-    datasets/joint-v65 logs/rel-hm user-churn \
+    datasets/relbench/rel-stack logs/rel-stack user-badge \
     --loadpath checkpoints/single-sft/best_checkpoint/model.safetensors \
     --seed 0 \
-    --savepath results/hm \
-    --tasks rel-hm-user-churn \
+    --savepath results/debug \
+    --tasks rel-stack-user-badge \
     --hop 2 \
     --fanout 20 \
     --maxepoch 50 \
@@ -17,7 +17,8 @@ accelerate launch --config_file hconfig.yaml rt_comparison.py \
     --use_rev True \
     --use_gate False \
     --fewshotfanout 3 \
-    --hiddim 512
+    --hiddim 512 \
+    --date debug
 
 # ORIGINAL
 accelerate launch --config_file hconfig.yaml hmaintask_combine.py \
