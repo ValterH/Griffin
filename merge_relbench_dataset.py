@@ -95,52 +95,52 @@ if __name__ == "__main__":
     edgenameemb_dataset = torch.load(os.path.join(dataset_path, "edgenameemb.pt"))
     try:
         edgenameemb_dst = torch.load(os.path.join(destination_path, "edgenameemb.pt"))
-        edgenameemb_dst = update_keys(edgenameemb_dst, edgenameemb_dataset, dataset_name)
     except FileNotFoundError:
-        edgenameemb_dst = edgenameemb_dataset
+        edgenameemb_dst = dict()
+    edgenameemb_dst = update_keys(edgenameemb_dst, edgenameemb_dataset, dataset_name)
 
     # combine featnameemb.pt files
 
     featnameemb_dataset = torch.load(os.path.join(dataset_path, "featnameemb.pt"))
     try:
         featnameemb_dst = torch.load(os.path.join(destination_path, "featnameemb.pt"))
-        featnameemb_dst = update_keys(featnameemb_dst, featnameemb_dataset, dataset_name)
     except FileNotFoundError:
-        featnameemb_dst = featnameemb_dataset
+        featnameemb_dst = dict()
+    featnameemb_dst = update_keys(featnameemb_dst, featnameemb_dataset, dataset_name)
 
     # combine tasknameemb.pt files
     tasknameemb_dataset = torch.load(os.path.join(dataset_path, "tasknameemb.pt"))
     try:
         tasknameemb_dst = torch.load(os.path.join(destination_path, "tasknameemb.pt"))
-        tasknameemb_dst = update_keys(tasknameemb_dst, tasknameemb_dataset, dataset_name)
     except FileNotFoundError:
-        tasknameemb_dst = tasknameemb_dataset
+        tasknameemb_dst = dict()
+    tasknameemb_dst = update_keys(tasknameemb_dst, tasknameemb_dataset, dataset_name)
 
 
     # combine metaadj.yaml files
     metaadj_dataset = yaml.safe_load(open(os.path.join(dataset_path, "metaadj.yaml"), "r"))
     try:
         metaadj_dst = yaml.safe_load(open(os.path.join(destination_path, "metaadj.yaml"), "r"))
-        metaadj_dst = update_keys(metaadj_dst, metaadj_dataset, dataset_name)
     except FileNotFoundError:
-        metaadj_dst = metaadj_dataset
+        metaadj_dst = dict()
+    metaadj_dst = update_keys(metaadj_dst, metaadj_dataset, dataset_name)
 
     # combine metanode.yaml files
     metanode_dataset = yaml.safe_load(open(os.path.join(dataset_path, "metanode.yaml"), "r"))
     try:
         metanode_dst = yaml.safe_load(open(os.path.join(destination_path, "metanode.yaml"), "r"))
-        metanode_dst = update_keys(metanode_dst, metanode_dataset, dataset_name)
     except FileNotFoundError:
-        metanode_dst = metanode_dataset
+        metanode_dst = dict()
+    metanode_dst = update_keys(metanode_dst, metanode_dataset, dataset_name)
 
 
     # combine metatask.yaml files
     metatask_dataset = yaml.safe_load(open(os.path.join(dataset_path, "metatask.yaml"), "r"))
     try:
         metatask_dst = yaml.safe_load(open(os.path.join(destination_path, "metatask.yaml"), "r"))
-        metatask_dst = update_keys(metatask_dst, metatask_dataset, dataset_name)
     except FileNotFoundError:
-        metatask_dst = metatask_dataset
+        metatask_dst = dict()
+    metatask_dst = update_keys(metatask_dst, metatask_dataset, dataset_name)
 
     # save the updated files
     torch.save(edgenameemb_dst, os.path.join(destination_path, "edgenameemb.pt"))
