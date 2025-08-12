@@ -55,7 +55,7 @@ for seed in [
         ]:
             cmd = rf"""
 accelerate launch --config_file hconfig.yaml rt_comparison.py \
-    datasets/relfm logs/{dataset} {task} \
+    datasets/relfm-v2 logs/{dataset} {task} \
     --seed {seed} \
     --savepath results/{dataset}/{task} \
     --tasks {dataset}-{task} \
