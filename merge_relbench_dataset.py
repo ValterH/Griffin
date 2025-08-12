@@ -1,9 +1,11 @@
+import json
 import os
 import yaml
 import shutil
 import argparse
 
 import torch
+import datasets as hds
 
 def copy_subfolders(src, dst, dataset_name):
     """
@@ -25,7 +27,7 @@ def copy_subfolders(src, dst, dataset_name):
         else:
             print(f"Skipping {folder_src}, not a directory.")
 
-def update_keys(dst_dict, src_dict, dataset_name):
+def update_keys(dst_dict, src_dict, dataset_name=None):
     # update all src_dict keys with dataset_name prefix
     old_keys = list(src_dict.keys())
     for key in old_keys:
@@ -72,6 +74,7 @@ def update_keys(dst_dict, src_dict, dataset_name):
                         "task_type"
                     ], f"Unexpected subkey {subkey} in {key} of src_dict"
 
+        dst_dict.pop(key, None) # remove the old key if it exists
         dst_dict[new_key] = src_dict.pop(key)
         print(f"Updating key {new_key}.")
             
@@ -79,8 +82,8 @@ def update_keys(dst_dict, src_dict, dataset_name):
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Merge RelBench dataset into joint-v65")
-    argparser.add_argument("--dataset_name", type=str, default="rel-stack", help="Name of the dataset to merge")
-    argparser.add_argument("--dst_path", type=str, default="datasets/relfm", help="Destination path for the merged dataset")
+    argparser.add_argument("--dataset_name", type=str, default="rel-event", help="Name of the dataset to merge")
+    argparser.add_argument("--dst_path", type=str, default="datasets/relfm-v2", help="Destination path for the merged dataset")
 
     args = argparser.parse_args()
     dataset_name = args.dataset_name
@@ -97,7 +100,9 @@ if __name__ == "__main__":
         edgenameemb_dst = torch.load(os.path.join(destination_path, "edgenameemb.pt"))
     except FileNotFoundError:
         edgenameemb_dst = dict()
+        edgenameemb_dst["fewshot"] = torch.load("datasets/joint-v65/edgenameemb.pt")["fewshot"]
     edgenameemb_dst = update_keys(edgenameemb_dst, edgenameemb_dataset, dataset_name)
+    # edgenameemb_dst.update(edgenameemb_dataset)  # directly update the dictionary
 
     # combine featnameemb.pt files
 
@@ -107,6 +112,7 @@ if __name__ == "__main__":
     except FileNotFoundError:
         featnameemb_dst = dict()
     featnameemb_dst = update_keys(featnameemb_dst, featnameemb_dataset, dataset_name)
+    # featnameemb_dst.update(featnameemb_dataset)  # directly update the dictionary
 
     # combine tasknameemb.pt files
     tasknameemb_dataset = torch.load(os.path.join(dataset_path, "tasknameemb.pt"))
@@ -115,6 +121,7 @@ if __name__ == "__main__":
     except FileNotFoundError:
         tasknameemb_dst = dict()
     tasknameemb_dst = update_keys(tasknameemb_dst, tasknameemb_dataset, dataset_name)
+    # tasknameemb_dst.update(tasknameemb_dataset)  # directly update the dictionary
 
 
     # combine metaadj.yaml files
@@ -124,6 +131,7 @@ if __name__ == "__main__":
     except FileNotFoundError:
         metaadj_dst = dict()
     metaadj_dst = update_keys(metaadj_dst, metaadj_dataset, dataset_name)
+    # metaadj_dst.update(metaadj_dataset)  # directly update the dictionary
 
     # combine metanode.yaml files
     metanode_dataset = yaml.safe_load(open(os.path.join(dataset_path, "metanode.yaml"), "r"))
@@ -132,7 +140,7 @@ if __name__ == "__main__":
     except FileNotFoundError:
         metanode_dst = dict()
     metanode_dst = update_keys(metanode_dst, metanode_dataset, dataset_name)
-
+    # metanode_dst.update(metanode_dataset)  # directly update the dictionary 
 
     # combine metatask.yaml files
     metatask_dataset = yaml.safe_load(open(os.path.join(dataset_path, "metatask.yaml"), "r"))
@@ -141,6 +149,7 @@ if __name__ == "__main__":
     except FileNotFoundError:
         metatask_dst = dict()
     metatask_dst = update_keys(metatask_dst, metatask_dataset, dataset_name)
+    # metatask_dst.update(metatask_dataset)  # directly update the dictionary
 
     # save the updated files
     torch.save(edgenameemb_dst, os.path.join(destination_path, "edgenameemb.pt"))
@@ -154,6 +163,26 @@ if __name__ == "__main__":
     edge_src = os.path.join(dataset_path, "edge")
     edge_dst = os.path.join(destination_path, "edge")
     copy_subfolders(edge_src, edge_dst, dataset_name)
+    for subfolder in os.listdir(edge_dst):
+        # with open(os.path.join(edge_dst, subfolder, "adj/dataset_info.json")) as f:
+        #     dataset_info = json.load(f)
+        # for key in list(dataset_info['features'].keys()):
+        #     if key.startswith("head of "):
+        #         new_key = key.replace("head of ", f"head of {dataset_name}-")
+        #         new_key = new_key.replace(":", f":{dataset_name}-")
+        #         dataset_info['features'][new_key] = dataset_info['features'].pop(key)
+        #     elif key.startswith("tail of"):
+        #         new_key = key.replace("tail of ", f"tail of {dataset_name}-")
+        #         new_key = new_key.replace(":", f":{dataset_name}-")
+        #         dataset_info['features'][new_key] = dataset_info['features'].pop(key)
+        #     else:
+        #         pass
+        # with open(os.path.join(edge_dst, subfolder, "adj/dataset_info.json"), "w") as f:
+        #     json.dump(dataset_info, f, indent=4)
+        dataset = hds.load_from_disk(
+            os.path.join(edge_dst, subfolder, "adj")
+        ).with_format("torch")
+        pass
 
     # copy the node directory
     node_src = os.path.join(dataset_path, "node")
