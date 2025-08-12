@@ -1,5 +1,8 @@
+import argparse
+
 import torch
 import torch.nn as nn
+from tqdm import tqdm
 
 class SimpleRepeater(nn.Module):
 
@@ -49,7 +52,11 @@ def getfloatdec(hiddim: int=256, train: bool=False):
     return FloatDec
 
 if __name__ == "__main__":
-    hiddim = 512
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument("--hiddim", type=int, default=512, help="hidden dimension for float encoder/decoder")
+    args = argparser.parse_args()
+
+    hiddim = args.hiddim
     floatdec = getfloatdec(hiddim, train=True)#nn.Sequential(nn.Linear(hiddim, hiddim, bias=False), nn.SiLU(inplace=True), nn.Linear(hiddim, 1, bias=False))
     floatenc = getfloatenc(hiddim, train=True)
     for p in floatdec.parameters():
@@ -60,6 +67,7 @@ if __name__ == "__main__":
     floatdec, floatenc = floatdec.to(device), floatenc.to(device)
     optimizer = torch.optim.AdamW(list(floatdec.parameters())+list(floatenc.parameters()), lr=1e-3, weight_decay=1e-3)
     bestloss = 1000
+    pbar = tqdm(total=100000)
     for i in range(100000):
         x = torch.randn((65536*16, 1), device=device)
         emb = floatenc(x)
@@ -68,6 +76,8 @@ if __name__ == "__main__":
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        pbar.set_description(f"loss: {loss.item():.4f}")
+        pbar.update(1)
         if i%100==0:
             floatdec.eval()
             floatenc.eval()
