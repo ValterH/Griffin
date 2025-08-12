@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("srcpath", type=str)
 parser.add_argument("dstpath", type=str)
 parser.add_argument("--ncpu", type=int, default=1)
+parser.add_argument("--model-dim", type=int, default=512)
 args = parser.parse_args()
 
 srcpath = args.srcpath #"griffin_datasets/joint-v52-pk-r2n/"#"tpberta-reg-r2n-combine/"#"./griffin_datasets/tpberta-bin-r2n-combine/"
@@ -73,7 +74,7 @@ class EdgeEmbeddingModel:
             device="cuda:0",
             cache_folder="cache_data/model",
             trust_remote_code=True,
-            truncate_dim=512,
+            truncate_dim=args.model_dim,
         )
 
     def encode(self, edgetype):
