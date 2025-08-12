@@ -17,45 +17,45 @@ checkpoint_dict = {
 }
 
 all_pairs = [
-    # clf
-    # ("rel-amazon", "user-churn"),
-    ("rel-hm", "user-churn"),
-    # ("rel-stack", "user-badge"),
-    # ("rel-amazon", "item-churn"),
-    # ("rel-stack", "user-engagement"),
-    # ("rel-avito", "user-visits"),
-    # ("rel-avito", "user-clicks"),
-    # ("rel-event", "user-ignore"),
-    # ("rel-trial", "study-outcome"),
-    # ("rel-f1", "driver-dnf"),
-    # ("rel-event", "user-repeat"),
-    # ("rel-f1", "driver-top3"),
-    # reg
-    ("rel-hm", "item-sales"),
-    # ("rel-amazon", "user-ltv"),
-    # ("rel-amazon", "item-ltv"),
-    # ("rel-stack", "post-votes"),
-    # ("rel-trial", "site-success"),
-    # ("rel-trial", "study-adverse"),
-    # ("rel-event", "user-attendance"),
-    # ("rel-f1", "driver-position"),
-    # ("rel-avito", "ad-ctr"),
+    # # clf
+    ("rel-amazon", "user-churn"),
+    # ("rel-hm", "user-churn"),
+    ("rel-stack", "user-badge"),
+    ("rel-amazon", "item-churn"),
+    ("rel-stack", "user-engagement"),
+    # # ("rel-avito", "user-visits"),
+    # # ("rel-avito", "user-clicks"),
+    # # ("rel-event", "user-ignore"),
+    # # ("rel-trial", "study-outcome"),
+    # # ("rel-f1", "driver-dnf"),
+    # # ("rel-event", "user-repeat"),
+    # # ("rel-f1", "driver-top3"),
+    # # reg
+    # ("rel-hm", "item-sales"),
+    ("rel-amazon", "user-ltv"),
+    ("rel-amazon", "item-ltv"),
+    ("rel-stack", "post-votes"),
+    # # ("rel-trial", "site-success"),
+    # # ("rel-trial", "study-adverse"),
+    # # ("rel-event", "user-attendance"),
+    # # ("rel-f1", "driver-position"),
+    # # ("rel-avito", "ad-ctr"),
 ]
 
 # %%
 for seed in [
     0,
-    123,
-    1234,
+    # 123,
+    # 1234,
 ]:
     for dataset, task in all_pairs:
         for pretrain in [
             True, 
-            False
+            # False
         ]:
             cmd = rf"""
 accelerate launch --config_file hconfig.yaml rt_comparison.py \
-    datasets/joint-v65 logs/{dataset} {task} \
+    datasets/relfm logs/{dataset} {task} \
     --seed {seed} \
     --savepath results/{dataset}/{task} \
     --tasks {dataset}-{task} \
