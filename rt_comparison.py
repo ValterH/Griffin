@@ -100,7 +100,7 @@ def compute_loss(model, dec, data):
     data = data[:-3]
     if y is None:
         output = dec(model(*data)[mapping])
-        loss = F.mse_loss(output.flatten(), label.flatten())
+        loss = F.mse_loss(output.flatten(), label.flatten().float())
     else:
         output = model(*data)[mapping] @ y.T
         loss = F.cross_entropy(output, label)
