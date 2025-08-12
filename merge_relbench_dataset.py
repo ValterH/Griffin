@@ -101,7 +101,17 @@ if __name__ == "__main__":
     except FileNotFoundError:
         edgenameemb_dst = dict()
         edgenameemb_dst["fewshot"] = torch.load("datasets/joint-v65/edgenameemb.pt")["fewshot"]
-    edgenameemb_dst = update_keys(edgenameemb_dst, edgenameemb_dataset, dataset_name)
+    for key in edgenameemb_dataset.keys():
+        if key.startswith("head of "):
+            new_key = key.replace("head of ", f"head of {dataset_name}-")
+            new_key = new_key.replace(":", f":{dataset_name}-")
+            edgenameemb_dst[new_key] = edgenameemb_dataset[key]
+        elif key.startswith("tail of "):
+            new_key = key.replace("tail of ", f"tail of {dataset_name}-")
+            new_key = new_key.replace(":", f":{dataset_name}-")
+            edgenameemb_dst[new_key] = edgenameemb_dataset[key]
+        else:
+            assert key == "fewshot"
     # edgenameemb_dst.update(edgenameemb_dataset)  # directly update the dictionary
 
     # combine featnameemb.pt files
@@ -162,32 +172,31 @@ if __name__ == "__main__":
     # copy the edge directory
     edge_src = os.path.join(dataset_path, "edge")
     edge_dst = os.path.join(destination_path, "edge")
-    copy_subfolders(edge_src, edge_dst, dataset_name)
-    for subfolder in os.listdir(edge_dst):
-        # with open(os.path.join(edge_dst, subfolder, "adj/dataset_info.json")) as f:
-        #     dataset_info = json.load(f)
-        # for key in list(dataset_info['features'].keys()):
-        #     if key.startswith("head of "):
-        #         new_key = key.replace("head of ", f"head of {dataset_name}-")
-        #         new_key = new_key.replace(":", f":{dataset_name}-")
-        #         dataset_info['features'][new_key] = dataset_info['features'].pop(key)
-        #     elif key.startswith("tail of"):
-        #         new_key = key.replace("tail of ", f"tail of {dataset_name}-")
-        #         new_key = new_key.replace(":", f":{dataset_name}-")
-        #         dataset_info['features'][new_key] = dataset_info['features'].pop(key)
-        #     else:
-        #         pass
-        # with open(os.path.join(edge_dst, subfolder, "adj/dataset_info.json"), "w") as f:
-        #     json.dump(dataset_info, f, indent=4)
-        dataset = hds.load_from_disk(
-            os.path.join(edge_dst, subfolder, "adj")
-        ).with_format("torch")
-        pass
+    # copy_subfolders(edge_src, edge_dst, dataset_name)
+    for subfolder in os.listdir(edge_src):
+        adj_src = os.path.join(edge_src, subfolder, "adj")
+        adj_path = os.path.join(edge_dst, f"{dataset_name}-{subfolder}", "adj")
+        dataset = hds.load_from_disk(adj_src).with_format("torch")
+        # Rename features
+        features = list(dataset.features.keys())
+        rename_map = {}
+        for key in features:
+            if key.startswith("head of "):
+                new_key = key.replace("head of ", f"head of {dataset_name}-")
+                new_key = new_key.replace(":", f":{dataset_name}-")
+                rename_map[key] = new_key
+            elif key.startswith("tail of"):
+                new_key = key.replace("tail of ", f"tail of {dataset_name}-")
+                new_key = new_key.replace(":", f":{dataset_name}-")
+                rename_map[key] = new_key
+        if rename_map:
+            dataset = dataset.rename_columns(rename_map)
+            dataset.save_to_disk(adj_path)
 
     # copy the node directory
     node_src = os.path.join(dataset_path, "node")
     node_dst = os.path.join(destination_path, "node")
-    copy_subfolders(node_src, node_dst, dataset_name)
+    # copy_subfolders(node_src, node_dst, dataset_name)
 
     # copy the task directory
     task_src = os.path.join(dataset_path, "task")
