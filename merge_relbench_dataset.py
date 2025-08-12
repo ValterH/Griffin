@@ -4,8 +4,28 @@ import yaml
 import shutil
 import argparse
 
+
 import torch
 import datasets as hds
+
+def update_dataset(dataset, dataset_name):
+    """
+    Rename features in the dataset according to the dataset_name prefixing rules.
+    """
+    features = list(dataset.features.keys())
+    rename_map = {}
+    for key in features:
+        if key.startswith("head of "):
+            new_key = key.replace("head of ", f"head of {dataset_name}-")
+            new_key = new_key.replace(":", f":{dataset_name}-")
+            rename_map[key] = new_key
+        elif key.startswith("tail of"):
+            new_key = key.replace("tail of ", f"tail of {dataset_name}-")
+            new_key = new_key.replace(":", f":{dataset_name}-")
+            rename_map[key] = new_key
+    if rename_map:
+        dataset = dataset.rename_columns(rename_map)
+    return dataset
 
 def copy_subfolders(src, dst, dataset_name):
     """
@@ -115,14 +135,13 @@ if __name__ == "__main__":
     # edgenameemb_dst.update(edgenameemb_dataset)  # directly update the dictionary
 
     # combine featnameemb.pt files
-
     featnameemb_dataset = torch.load(os.path.join(dataset_path, "featnameemb.pt"))
     try:
         featnameemb_dst = torch.load(os.path.join(destination_path, "featnameemb.pt"))
     except FileNotFoundError:
         featnameemb_dst = dict()
-    featnameemb_dst = update_keys(featnameemb_dst, featnameemb_dataset, dataset_name)
-    # featnameemb_dst.update(featnameemb_dataset)  # directly update the dictionary
+    # featnameemb_dst = update_keys(featnameemb_dst, featnameemb_dataset, dataset_name)
+    featnameemb_dst.update(featnameemb_dataset)  # directly update the dictionary
 
     # combine tasknameemb.pt files
     tasknameemb_dataset = torch.load(os.path.join(dataset_path, "tasknameemb.pt"))
@@ -196,7 +215,7 @@ if __name__ == "__main__":
     # copy the node directory
     node_src = os.path.join(dataset_path, "node")
     node_dst = os.path.join(destination_path, "node")
-    # copy_subfolders(node_src, node_dst, dataset_name)
+    copy_subfolders(node_src, node_dst, dataset_name)
 
     # copy the task directory
     task_src = os.path.join(dataset_path, "task")
