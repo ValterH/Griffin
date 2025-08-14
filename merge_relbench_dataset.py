@@ -1,4 +1,3 @@
-import json
 import os
 import yaml
 import shutil
@@ -102,12 +101,12 @@ def update_keys(dst_dict, src_dict, dataset_name=None):
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Merge RelBench dataset into joint-v65")
-    argparser.add_argument("--dataset_name", type=str, default="rel-event", help="Name of the dataset to merge")
-    argparser.add_argument("--dst_path", type=str, default="datasets/relfm-v2", help="Destination path for the merged dataset")
+    argparser.add_argument("--dataset_name", type=str, default="rel-stack", help="Name of the dataset to merge")
+    argparser.add_argument("--dst_path", type=str, default="datasets/relfm-v3", help="Destination path for the merged dataset")
 
     args = argparser.parse_args()
     dataset_name = args.dataset_name
-    dataset_path = os.path.join("datasets", "relbench", dataset_name)
+    dataset_path = os.path.join("datasets", "relbench-728", dataset_name)
     destination_path = args.dst_path
 
     os.makedirs(destination_path, exist_ok=True)
