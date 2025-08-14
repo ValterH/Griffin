@@ -1,6 +1,6 @@
 # RT comparison
 accelerate launch --config_file hconfig.yaml rt_comparison.py \
-    datasets/relbench/rel-stack logs/rel-stack user-badge \
+    datasets/joint-v65 logs/rel-stack user-badge \
     --loadpath checkpoints/single-sft/best_checkpoint/model.safetensors \
     --seed 0 \
     --savepath results/debug \
