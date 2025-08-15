@@ -61,7 +61,7 @@ class GriffinLabelFeature:
             self.encode_with_template = self._ST_encode
             self.LLM_dim = 768
         elif self.LLM_name == "nomic":
-            self.LLM_dim = 512
+            self.LLM_dim = 768
             self.model = SentenceTransformer(
                 "nomic-ai/nomic-embed-text-v1.5",
                 cache_folder=self.LLM_root_dir,
