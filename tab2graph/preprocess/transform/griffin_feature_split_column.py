@@ -385,7 +385,7 @@ class GriffinFeature_SplitColumn(RDBTransform):
                 )
 
                 embedding_backup_path = os.path.join(
-                    self.text_backup_dir, f"{tbl_name}_{safe_col_name}_{self.LLM_name}.npy"
+                    self.text_backup_dir, f"{tbl_name}_{safe_col_name}_{self.LLM_name}_{self.LLM_dim}.npy"
                 )
                 if os.path.exists(embedding_backup_path):
                     embedding_numpy_list = np.load(embedding_backup_path)
