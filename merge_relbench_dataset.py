@@ -101,8 +101,9 @@ def update_keys(dst_dict, src_dict, dataset_name=None):
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Merge RelBench dataset into joint-v65")
-    argparser.add_argument("--dataset_name", type=str, default="rel-stack", help="Name of the dataset to merge")
-    argparser.add_argument("--dst_path", type=str, default="datasets/relfm-v3", help="Destination path for the merged dataset")
+    argparser.add_argument("--dataset_name", type=str, default="rel-avito", help="Name of the dataset to merge")
+    argparser.add_argument("--dst_path", type=str, default="datasets/relfm", help="Destination path for the merged dataset")
+    # argparser.add_argument("--model-dim", type=int, default=728, help="Dimension of the model")
 
     args = argparser.parse_args()
     dataset_name = args.dataset_name

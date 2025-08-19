@@ -2,8 +2,8 @@
 
 DATASET=$1
 
-SRCPATH="datasets/$DATASET-r2n-griffin"
-DSTPATH="datasets/relbench-728/$DATASET"
+SRCPATH="datasets/728/$DATASET-r2n-griffin"
+DSTPATH="datasets/728/relbench/$DATASET"
 
 python dataconverter.py $SRCPATH $DSTPATH
 python dataconverteredge.py $SRCPATH $DSTPATH --model-dim=728
