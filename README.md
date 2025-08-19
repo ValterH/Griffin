@@ -33,6 +33,15 @@ In Griffin, we use datasets from [4DBInfer](https://github.com/awslabs/multi-tab
 bash conda/install-ubuntu-deps.sh
 bash conda/create_conda_env.sh
 ```
+> @Valter: For preprocessing I simply created a conda environment with python=3.9 and installed the requirements from conda/requirements.txt:
+```bash
+conda create -n griffin-preprocessing python=3.9
+pip install -r requirements.txt
+# optionally install relbench
+pip install relbench
+
+```
+> @Valter: For preprocessing the relbench datasets simply run the `convert_relbench.sh` script with the dataset name.
 
 ## Step 1: Any-RDB-to-RDB
 
