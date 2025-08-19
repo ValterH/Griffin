@@ -2,8 +2,8 @@
 
 DATASET=$1
 
-# requires relbench
-python convert_relbench_to_dbinfer_fulltask.py --dataset=$DATASET --output_dir=datasets/728
+# # requires relbench
+# python convert_relbench_to_dbinfer_fulltask.py --dataset=$DATASET --output_dir=datasets/728
 
 python -m tab2graph.main preprocess datasets/728/$DATASET transform datasets/728/$DATASET-raw -c configs/transform/raw_for_griffin.yaml
 
