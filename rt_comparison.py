@@ -124,8 +124,8 @@ def main(args):
         print(f"Number of trainable parameters: {num_parameters}")
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
-    graph = Graph(args.dataset)
-    task = Task(args.dataset)
+    graph = Graph(args.dataset, feat_dim=args.hiddim)
+    task = Task(args.dataset, feat_dim=args.hiddim)
 
     tasknames = args.tasks
     if len(tasknames) == 1:

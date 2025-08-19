@@ -17,11 +17,12 @@ class Node:
     textemb: hds.Dataset
     adj: Union[hds.Dataset, None]
 
-    def __init__(self, meta, feat, textemb, adj) -> None:
+    def __init__(self, meta, feat, textemb, adj, feat_dim=512) -> None:
         self.meta = meta
         self.feat = feat
         self.textemb = textemb
         self.adj = adj
+        self.feat_dim = feat_dim
         assert len(self.feat) == self.meta["num"]
         if self.adj is not None:
             assert (
@@ -41,17 +42,26 @@ class Node:
 
     def getfeat(self, idx: Union[int, Iterable[int]], floatemb) -> torch.Tensor:
         data: dict = self.feat[idx]
-        def unique_query_textemb(idx):
+        def unique_query_textemb(idx, input_dim=None):
             unique_idx, inv = torch.unique(idx, return_inverse=True)
-            return self.textemb[unique_idx]["emb"][inv]
-        def unique_float_emb(val):
-            # return floatemb(val)
+            text_embeddings = self.textemb[unique_idx]["emb"][inv]
+            if input_dim is not None:
+                assert text_embeddings.shape[1] >= input_dim, f"input_dim {input_dim} is larger than text embedding dimension {text_embeddings.shape[1]}"
+                text_embeddings = text_embeddings[:, :input_dim]
+            return text_embeddings
+        
+        def unique_float_emb(val, input_dim=None):
             unique_val, inv = torch.unique(val, return_inverse=True)
-            return floatemb(unique_val)[inv]
+            float_embeddings = floatemb(unique_val)[inv]
+            if input_dim is not None:
+                assert float_embeddings.shape[1] >= input_dim, f"input_dim {input_dim} is larger than float embedding dimension {float_embeddings.shape[1]}"
+                float_embeddings = float_embeddings[:, :input_dim]
+            return float_embeddings
+        
         data = torch.stack(
             [
                 (
-                    unique_query_textemb(data[_])#self.textemb[data[_]]["emb"]
+                    unique_query_textemb(data[_], input_dim=self.feat_dim)
                     if "Griffin_text_" in _
                     else unique_float_emb(data[_])#floatemb(data[_])
                 )
@@ -136,20 +146,23 @@ def edgename2head(edgename: str):
 
 class Graph:
 
-    def __init__(self, path) -> None:
+    def __init__(self, path, feat_dim=512) -> None:
         with open(osp.join(path, "metanode.yaml")) as f:
             metanode = yaml.safe_load(f)
         with open(osp.join(path, "metaadj.yaml")) as f:
             metaadj = yaml.safe_load(f)
         for nodetype in metanode:
             metanode[nodetype].update(metaadj[nodetype])
+        self.feat_dim = feat_dim
         self.metanode = metanode
         self.edgenameemb = torch.load(
             osp.join(path, "edgenameemb.pt"), map_location="cpu", weights_only=True
         )
+        self.edgenameemb = {name: emb[:feat_dim] for name, emb in self.edgenameemb.items()}
         self.featnameemb = torch.load(
             osp.join(path, "featnameemb.pt"), map_location="cpu", weights_only=True
         )
+        self.featnameemb = {name: emb[:feat_dim] for name, emb in self.featnameemb.items()}
         self.nodes = {
             nodetype: Node(
                 self.metanode[nodetype],
@@ -171,6 +184,7 @@ class Graph:
                         osp.join(path, "edge", nodetype, "adj")
                     ).with_format("torch")
                 ),
+                feat_dim=self.feat_dim,
             )
             for nodetype in self.metanode
         }
@@ -306,13 +320,15 @@ class Graph:
 
 
 class Task:
-    def __init__(self, path) -> None:
+    def __init__(self, path, feat_dim=512) -> None:
         with open(osp.join(path, "metatask.yaml")) as f:
             self.metatask = yaml.safe_load(f)
 
+        self.feat_dim = feat_dim
         self.tasknameemb = torch.load(
             osp.join(path, "tasknameemb.pt"), map_location="cpu", weights_only=True
         )
+        self.tasknameemb = {name: emb[:feat_dim] for name, emb in self.tasknameemb.items()}
         self.tasks = {
             taskname: hds.load_from_disk(osp.join(path, "task", taskname)).with_format(
                 "torch"
