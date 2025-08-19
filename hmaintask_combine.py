@@ -4,6 +4,7 @@ from hdataset import Graph, Task
 from hloaderwrapper import LoaderWrapperTask
 from hmodel import GriffinMod
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 from accelerate import Accelerator
 from accelerate.utils import ProjectConfiguration
 from hFloatEmb import SimpleRepeater, getfloatdec
@@ -11,7 +12,6 @@ import numpy as np
 import accelerate
 import argparse
 import os.path as osp
-from typing import Union
 from metric import compute_metric
 import yaml
 
@@ -31,7 +31,7 @@ def eval_task(model, dec, dataset, args, accelerator, metric):
     outputs = []
     labels = []
     with torch.no_grad():
-        for data in loader:
+        for data in tqdm(loader, desc="Evaluating", disable=not accelerator.is_main_process):
             output, label = compute_output(model, dec, data)
             if output.shape[0] < batchsize:
                 assert output.ndim == 2
@@ -201,7 +201,24 @@ def main(args):
             pin_memory=True
         )
         loader = accelerator.prepare(loader)
-        for data in loader:
+        for data in tqdm(loader, desc=f"Epoch {epoch}", disable=not accelerator.is_main_process):
+            if step & (step - 1) == 0:
+                eval_metric = {}
+                for taskname in tasknames:
+                    if accelerator.is_main_process:
+                        print(f"Validating {taskname}...")
+                    eval_metric[taskname] = eval_task(
+                        model,
+                        dec,
+                        valid_dataset_dict[taskname],
+                        args,
+                        accelerator,
+                        metric_dict[taskname],
+                    )
+
+                    if accelerator.is_main_process:
+                        print(f"steps: {step} valid_metric/{taskname}/{metric_dict[taskname]}: {eval_metric[taskname]}", flush=True)
+                model.train()
             step += 1
             optimizer.zero_grad()
             loss = compute_loss(model, dec, data)
