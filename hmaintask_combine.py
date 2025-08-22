@@ -115,8 +115,8 @@ def main(args):
     dec = getfloatdec(args.hiddim)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
-    graph = Graph(args.dataset)
-    task = Task(args.dataset)
+    graph = Graph(args.dataset, args.hiddim)
+    task = Task(args.dataset, args.hiddim)
 
     tasknames = args.tasks
     if len(tasknames) == 1:
@@ -202,23 +202,6 @@ def main(args):
         )
         loader = accelerator.prepare(loader)
         for data in tqdm(loader, desc=f"Epoch {epoch}", disable=not accelerator.is_main_process):
-            if step & (step - 1) == 0:
-                eval_metric = {}
-                for taskname in tasknames:
-                    if accelerator.is_main_process:
-                        print(f"Validating {taskname}...")
-                    eval_metric[taskname] = eval_task(
-                        model,
-                        dec,
-                        valid_dataset_dict[taskname],
-                        args,
-                        accelerator,
-                        metric_dict[taskname],
-                    )
-
-                    if accelerator.is_main_process:
-                        print(f"steps: {step} valid_metric/{taskname}/{metric_dict[taskname]}: {eval_metric[taskname]}", flush=True)
-                model.train()
             step += 1
             optimizer.zero_grad()
             loss = compute_loss(model, dec, data)
