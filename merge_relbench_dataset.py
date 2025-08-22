@@ -101,7 +101,7 @@ def update_keys(dst_dict, src_dict, dataset_name=None):
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Merge RelBench dataset into joint-v65")
-    argparser.add_argument("--dataset_name", type=str, default="rel-f1", help="Name of the dataset to merge")
+    argparser.add_argument("--dataset_name", type=str, default="rel-stack", help="Name of the dataset to merge")
     argparser.add_argument("--dst_path", type=str, default="datasets/relfm", help="Destination path for the merged dataset")
     # argparser.add_argument("--model-dim", type=int, default=728, help="Dimension of the model")
 
@@ -120,7 +120,7 @@ if __name__ == "__main__":
         edgenameemb_dst = torch.load(os.path.join(destination_path, "edgenameemb.pt"))
     except FileNotFoundError:
         edgenameemb_dst = dict()
-        # padd to 768
+        # pad to 768
         fewshot_emb = torch.load("datasets_/joint-v65/edgenameemb.pt")["fewshot"]
         edgenameemb_dst["fewshot"] = torch.zeros(768, dtype=torch.float32)  # initialize with zeros
         edgenameemb_dst["fewshot"][:fewshot_emb.shape[0]] = fewshot_emb  # copy the fewshot embedding
