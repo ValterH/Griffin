@@ -124,13 +124,13 @@ def main(args):
     eval_tasks = args.eval_tasks
     if len(tasknames) == 1:
         assert tasknames[0] in ["rel-hm-heldout", "rel-amazon-heldout", "rel-stack-heldout"]
+        dataset_name = tasknames[0].split("-heldout")[0]
         with open("task_names.yaml", "r") as f:
             tasks_dict = yaml.load(f, Loader=yaml.FullLoader)
         tasknames = tasks_dict[tasknames[0]]
 
     if accelerator.is_main_process:
         print(tasknames)
-        dataset_name = tasknames[0].split("-heldout")[0]
         store_path = osp.expanduser(f"~/scratch/roach/stores/{args.date}")
         store.init(store_path)
         store.save({
@@ -225,7 +225,9 @@ def main(args):
                         metric_dict[taskname],
                     )
                     if accelerator.is_main_process:
+                        print("DATASET", dataset_name)
                         task_name = taskname.replace(f"{dataset_name}-", "")
+                        print(taskname, task_name)
                         tbtracker.log({f"valid_metric/{task_name}/{metric_dict[taskname]}": eval_metric[taskname]}, step=step)
                         print(f"steps: {step} valid_metric/{task_name}/{metric_dict[taskname]}: {eval_metric[taskname]}", flush=True)
                         split = "val"
