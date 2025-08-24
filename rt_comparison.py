@@ -20,7 +20,7 @@ from roach.store import store
 
 from metric import compute_metric
 
-def eval_task(model, dec, dataset, args, accelerator, metric):
+def eval_task(model, dec, dataset, args, accelerator, metric, desc="Val"):
     model.eval()
     dataset.rebuild_indice(accelerator)
     batchsize: int = dataset.batch_size
@@ -36,7 +36,7 @@ def eval_task(model, dec, dataset, args, accelerator, metric):
     outputs = []
     labels = []
     with torch.no_grad():
-        for data in tqdm(loader, desc="Val", disable=not accelerator.is_main_process):
+        for data in tqdm(loader, desc=desc, disable=not accelerator.is_main_process):
             output, label = compute_output(model, dec, data)
             if output.shape[0] < batchsize:
                 assert output.ndim == 2
@@ -213,6 +213,34 @@ def main(args):
                 print(f"test_metric/{taskname}: {test_metric[taskname]}", flush=True)
         accelerator.end_training()
         return
+    
+    def run_eval(split="val"):
+        if split == "val":
+            dataset = valid_dataset_dict[taskname]
+        elif split == "test":
+            dataset = test_dataset_dict[taskname]
+        else:
+            raise ValueError(f"Unknown split: {split}")
+        
+        if accelerator.is_main_process:
+            print(f"Validating {taskname}...")
+        eval_metric[taskname] = eval_task(
+            model,
+            dec,
+            dataset,
+            args,
+            accelerator,
+            metric_dict[taskname],
+            desc=split.capitalize()
+        )
+
+        if accelerator.is_main_process:
+            store.log("step", step)
+            store.log("epochs", step / len(loader))
+            tbtracker.log({f"{split}_metric/{taskname}/{metric_dict[taskname]}": eval_metric[taskname]}, step=step)
+            print(f"steps: {step} {split}/{taskname}/{metric_dict[taskname]}: {eval_metric[taskname]}", flush=True)
+            k = f"{metric_dict[taskname]}/{dataset_name}/{task_name}/{split}"
+            store.log(k, eval_metric[taskname])
 
     model.train()
     step = 0
@@ -236,25 +264,8 @@ def main(args):
             if step & (step - 1) == 0:
                 eval_metric = {}
                 for taskname in tasknames:
-                    if accelerator.is_main_process:
-                        print(f"Validating {taskname}...")
-                    eval_metric[taskname] = eval_task(
-                        model,
-                        dec,
-                        valid_dataset_dict[taskname],
-                        args,
-                        accelerator,
-                        metric_dict[taskname],
-                    )
-
-                    if accelerator.is_main_process:
-                        store.log("step", step)
-                        store.log("epochs", step / len(loader))
-                        tbtracker.log({f"valid_metric/{taskname}/{metric_dict[taskname]}": eval_metric[taskname]}, step=step)
-                        print(f"steps: {step} valid_metric/{taskname}/{metric_dict[taskname]}: {eval_metric[taskname]}", flush=True)
-                        split = "val"
-                        k = f"{metric_dict[taskname]}/{dataset_name}/{task_name}/{split}"
-                        store.log(k, eval_metric[taskname])
+                    run_eval(split="val")
+                    run_eval(split="test")
                 model.train()
             step += 1
             if step == args.max_steps:
