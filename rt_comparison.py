@@ -162,16 +162,17 @@ def main(args):
         task_name = "-".join(dashed[2:]) # user-churn
         pretrained = None
         if args.loadpath is not None:
-            if "single-sft" in args.loadpath:
-                pretrained = "single-sft"
+            if args.loadpath is not None:
+                pretrained = True
             else:
-                raise ValueError(f"Unknown loadpath {args.loadpath}")
+                pretrained = False
         store.save({
             "script_name": "griffin",
             "seed": args.seed,
             "dataset": dataset_name,
             "task": task_name,
-            "pretrain_steps": pretrained
+            "pretrain_steps": pretrained,
+            "model_dim": args.hiddim,
         }, "args")
 
     floatembmodel = SimpleRepeater(args.hiddim)
