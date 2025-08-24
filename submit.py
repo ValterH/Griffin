@@ -55,7 +55,7 @@ accelerate launch \
 	rt_pretrain.py \
 	datasets/relfm \
 	logs/relfm log \
-	--savepath checkpoints/relbench \
+	--savepath checkpoints/relbench/{model_size} \
 	--tasks {dataset}-heldout \
 	--hop 0 \
 	--fanout 10 \
@@ -113,7 +113,7 @@ accelerate launch --config_file hconfig.yaml rt_comparison.py \
     --max_steps {2**13+1} \
     """
             if pretrain:
-                ckpt_path = f"checkpoints/relbench/checkpoint-{dataset}-{task}-best/model.safetensors"
+                ckpt_path = f"checkpoints/relbench/{model_size}/checkpoint-{dataset}-{task}-best/model.safetensors"
                 cmd += f"--loadpath {ckpt_path}"
                 chk = f"test -e {ckpt_path}"
             else:
