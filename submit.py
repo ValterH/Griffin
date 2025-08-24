@@ -67,13 +67,17 @@ accelerate launch \
 	--num_mp 4 \
 	--use_rev True \
 	--use_gate True \
-	--hiddim 728 \
+	--hiddim {model_size} \
 	--eval_freq 5000 \
     --date {date} \
 	--eval_tasks {' '.join(eval_tasks)}
 """
     q.submit(cmd)
 
+# %%
+################################################################################
+# FINE-TUNE
+################################################################################
 # %%
 
 for seed in [
@@ -84,7 +88,7 @@ for seed in [
     for dataset, task in all_pairs:
         for pretrain in [
             True, 
-            False
+            # False
         ]:
             cmd = rf"""
 accelerate launch --config_file hconfig.yaml rt_comparison.py \
@@ -94,7 +98,7 @@ accelerate launch --config_file hconfig.yaml rt_comparison.py \
     --tasks {dataset}-{task} \
     --hop 2 \
     --fanout 20 \
-    --maxepoch 50 \
+    --maxepoch 1000 \
     --patience 15 \
     --eval_per_epoch 50 \
     --batchsize 256 \
@@ -102,14 +106,14 @@ accelerate launch --config_file hconfig.yaml rt_comparison.py \
     --wd 2e-4 \
     --num_mp 4 \
     --use_rev True \
-    --use_gate False \
+    --use_gate True \
     --fewshotfanout 3 \
     --hiddim {model_size} \
     --date {date} \
     --max_steps {2**13+1} \
     """
             if pretrain:
-                ckpt_path = f"/lfs/local/0/valter/Griffin/checkpoints/single-sft/best_checkpoint/model.safetensors"
+                ckpt_path = f"checkpoints/relbench/checkpoint-{dataset}-{task}-best/model.safetensors"
                 cmd += f"--loadpath {ckpt_path}"
                 chk = f"test -e {ckpt_path}"
             else:
