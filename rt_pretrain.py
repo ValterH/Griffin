@@ -117,6 +117,14 @@ def main(args):
     dec = getfloatdec(args.hiddim)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
+    if args.lr_schedule:
+        lrs = torch.optim.lr_scheduler.OneCycleLR(
+                optimizer,
+                max_lr=args.lr,
+                total_steps=args.max_steps,
+                pct_start=0.2,
+                anneal_strategy="linear",
+            )
     graph = Graph(args.dataset, args.hiddim)
     task = Task(args.dataset, args.hiddim)
 
@@ -204,6 +212,8 @@ def main(args):
             loss = compute_loss(model, dec, data)
             accelerator.backward(loss)
             optimizer.step()
+            if args.lr_schedule:
+                lrs.step()
 
             if accelerator.is_main_process:
                 store.log("step", step)
@@ -250,37 +260,6 @@ def main(args):
 
         if stopped:
             break
-
-    # test_metric = {}
-    # if best_checkpoint_path is not None:
-    #     if accelerator.is_main_process:
-    #         print(f"Loading best checkpoint from {best_checkpoint_path}")
-    #     unwrap_model = accelerator.unwrap_model(model)
-    #     accelerate.load_checkpoint_in_model(unwrap_model, best_checkpoint_path)
-    #     model = accelerator.prepare(unwrap_model)
-    #     # resave the best checkpoint
-    #     if accelerator.is_main_process:
-    #         print(f"Saving best checkpoint at {osp.join(args.savepath, 'best_checkpoint')}")
-    #         accelerator.save_model(model, osp.join(args.savepath, 'best_checkpoint'))
-    # for taskname in tasknames:
-    #     if accelerator.is_main_process:
-    #         print(f"Testing {taskname}...")
-    #     eval_metric = eval_task(
-    #         model,
-    #         dec,
-    #         test_dataset_dict[taskname],
-    #         args,
-    #         accelerator,
-    #         metric_dict[taskname],
-    #     )
-    #     if accelerator.is_main_process:
-    #         tbtracker.log({f"test_metric/{taskname}": eval_metric}, step=step)
-    #         print(f"test_metric/{taskname}: {eval_metric}")
-    #         test_metric[taskname] = eval_metric
-
-    # if accelerator.is_main_process:
-    #     avg_metric = sum(test_metric.values()) / len(test_metric)
-    #     print(f"Average test metric: {avg_metric}")
 
     accelerator.end_training()
 
@@ -332,6 +311,7 @@ if __name__ == "__main__":
     parser.add_argument("--date", type=str, default="debug")
     parser.add_argument("--max_steps", type=int, default=50_000)
     parser.add_argument("--eval_freq", type=int, default=5000)
+    parser.add_argument("--lr_schedule", type=str2bool, default=True)
 
     args = parser.parse_args()
     args.eval_batchsize = args.batchsize if args.eval_batchsize is None else args.eval_batchsize

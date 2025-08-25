@@ -2,7 +2,7 @@
 from roach.queue import Queue
 
 # %%
-date = "2025-08-21"
+date = "2025-08-25"
 q = Queue(f"~/scratch/roach/queues/{date}-griffin")
 
 # %%
@@ -11,10 +11,6 @@ q = Queue(f"~/scratch/roach/queues/{date}-griffin")
 ################################################################################
 
 # %%
-
-checkpoint_dict = {
-    "rel-hm": "commerce-2"
-}
 
 all_pairs = [
     # # clf
@@ -55,20 +51,22 @@ accelerate launch \
 	rt_pretrain.py \
 	datasets/relfm \
 	logs/relfm log \
-	--savepath checkpoints/relbench/{model_size} \
+	--savepath checkpoints/relbench_matched/{model_size} \
 	--tasks {dataset}-heldout \
 	--hop 0 \
 	--fanout 10 \
 	--fewshotfanout 0 \
 	--maxepoch 1000 \
 	--batchsize 4096 \
-	--lr 0.00042364843314963003 \
-	--wd 2.423189169972981e-05 \
+    --lr=1e-3 \
+    --wd=0.1 \
 	--num_mp 4 \
+    --lr_schedule=True \
 	--use_rev True \
 	--use_gate True \
 	--hiddim {model_size} \
 	--eval_freq 5000 \
+    --max_steps=50_000 \
     --date {date} \
 	--eval_tasks {' '.join(eval_tasks)}
 """
@@ -102,8 +100,8 @@ accelerate launch --config_file hconfig.yaml rt_comparison.py \
     --patience 15 \
     --eval_per_epoch 50 \
     --batchsize 256 \
-    --lr 3e-4 \
-    --wd 2e-4 \
+    --lr=1e-4 \
+    --wd=0.0 \
     --num_mp 4 \
     --use_rev True \
     --use_gate True \
@@ -113,7 +111,7 @@ accelerate launch --config_file hconfig.yaml rt_comparison.py \
     --max_steps {2**13+1} \
     """
             if pretrain:
-                ckpt_path = f"checkpoints/relbench/{model_size}/checkpoint-{dataset}-{task}-best/model.safetensors"
+                ckpt_path = f"checkpoints/relbench_matched/{model_size}/checkpoint-{dataset}-{task}-best/model.safetensors"
                 cmd += f"--loadpath {ckpt_path}"
                 chk = f"test -e {ckpt_path}"
             else:
