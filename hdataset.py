@@ -51,7 +51,7 @@ class Node:
             if input_dim is not None:
                 assert text_embeddings.shape[1] >= input_dim, f"input_dim {input_dim} is larger than text embedding dimension {text_embeddings.shape[1]}"
                 text_embeddings = text_embeddings[:, :input_dim]
-            return normalize_emb(text_embeddings, p=2, dim=-1)
+            return normalize_emb(text_embeddings)
 
         def unique_float_emb(val, input_dim=None):
             unique_val, inv = torch.unique(val, return_inverse=True)
@@ -59,7 +59,7 @@ class Node:
             if input_dim is not None:
                 assert float_embeddings.shape[1] >= input_dim, f"input_dim {input_dim} is larger than float embedding dimension {float_embeddings.shape[1]}"
                 float_embeddings = float_embeddings[:, :input_dim]
-            return float_embeddings
+            return normalize_emb(float_embeddings)
         
         data = torch.stack(
             [
