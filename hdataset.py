@@ -1,15 +1,17 @@
-import yaml
 import os.path as osp
+from typing import Iterable, Union, Literal
+
+import yaml
 import torch
 import torch.nn.functional as F
 import datasets as hds
-from typing import Optional, Iterable, Union, Literal
-from typing import Union
-import numpy as np
 
 INF = 100000000
 MAXINT64 = 1<<62
 TIMESTAMPADJNAME = "___TIMESTAMP"
+
+def normalize_emb(embeddings):
+    return F.normalize(embeddings, p=2, dim=-1)
 
 class Node:
     meta: dict
@@ -39,6 +41,7 @@ class Node:
     @property
     def featlist(self):
         return self.meta["feat"]
+    
 
     def getfeat(self, idx: Union[int, Iterable[int]], floatemb) -> torch.Tensor:
         data: dict = self.feat[idx]
@@ -48,8 +51,8 @@ class Node:
             if input_dim is not None:
                 assert text_embeddings.shape[1] >= input_dim, f"input_dim {input_dim} is larger than text embedding dimension {text_embeddings.shape[1]}"
                 text_embeddings = text_embeddings[:, :input_dim]
-            return text_embeddings
-        
+            return normalize_emb(text_embeddings, p=2, dim=-1)
+
         def unique_float_emb(val, input_dim=None):
             unique_val, inv = torch.unique(val, return_inverse=True)
             float_embeddings = floatemb(unique_val)[inv]
@@ -158,11 +161,11 @@ class Graph:
         self.edgenameemb = torch.load(
             osp.join(path, "edgenameemb.pt"), map_location="cpu", weights_only=True
         )
-        self.edgenameemb = {name: emb[:feat_dim] for name, emb in self.edgenameemb.items()}
+        self.edgenameemb = {name: normalize_emb(emb[:feat_dim]) for name, emb in self.edgenameemb.items()}
         self.featnameemb = torch.load(
             osp.join(path, "featnameemb.pt"), map_location="cpu", weights_only=True
         )
-        self.featnameemb = {name: emb[:feat_dim] for name, emb in self.featnameemb.items()}
+        self.featnameemb = {name: normalize_emb(emb[:feat_dim]) for name, emb in self.featnameemb.items()}
         self.nodes = {
             nodetype: Node(
                 self.metanode[nodetype],
