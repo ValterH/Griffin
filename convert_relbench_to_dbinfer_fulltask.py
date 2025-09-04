@@ -4,6 +4,8 @@
 # 2. convert to dbinfer dataset
 # 3. save dbinfer dataset
 
+import relbench
+from relbench.base import EntityTask, Table
 from relbench.datasets import get_dataset
 from relbench.base.task_base import TaskType
 from relbench.tasks import get_task_names, get_task
@@ -394,12 +396,42 @@ def update_task_table(table, task_meta, table_schemas, original_relbench_tasks):
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", type=str, default="rel-hm")
 parser.add_argument("--output_dir", type=str, default="converted_with_full_task")
+parser.add_argument("--add_task_tables", action="store_true")
 args = parser.parse_args()
 args.output_dir = Path(args.output_dir) / args.dataset
 args.output_dir.mkdir(parents=True, exist_ok=True)
 
 dataset = get_dataset(name=args.dataset, download=True)
 db = dataset.get_db()
+
+def get_full_task_table(task: relbench.base.EntityTask):
+    pass
+
+# ===== 0. ADD TASK TABLES TO DATABASE ====
+
+if args.add_task_tables:
+    for task_name in get_task_names(args.dataset):
+        task = get_task(args.dataset, task_name)
+        if not isinstance(task, EntityTask):
+            print(f"Skipping non-EntityTask: {task_name}")
+            continue
+        print(f"Adding task table for task: {task_name}")
+        train_table = task.get_table("train")
+        val_table = task.get_table("val")
+        test_table = task.get_table("test", mask_input_cols=False)
+        df = pd.concat([train_table.df, val_table.df, test_table.df])
+        df.reset_index(inplace=True, drop=True)
+        # insert primary key column "pk"
+        df.insert(0, "pk", df.index)
+        db.table_dict[f"{task_name}__TASK__"] = Table(
+            df=df,
+            fkey_col_to_pkey_table={
+                task.entity_col: task.entity_table,
+            },
+            pkey_col="pk",
+            time_col=task.time_col,
+        )
+
 
 # ===== 1. PROCESS DATA TABLES FIRST =====
 print("=== Processing Data Tables ===")
